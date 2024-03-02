@@ -37,7 +37,7 @@ namespace organisation
         int _width, _height, _depth;
 
         genetic::cache caches;
-        genetic::movement movement;
+        genetic::movements::movement movement;
         genetic::collisions collisions;
         genetic::inserts::insert insert;
 
@@ -46,7 +46,7 @@ namespace organisation
         bool init;
         
     public:
-        program(parameters &settings) : caches(settings), collisions(settings)
+        program(parameters &settings) : caches(settings), collisions(settings), insert(settings)
         { 
             makeNull(); 
             reset(settings); 
@@ -58,7 +58,7 @@ namespace organisation
 
     public:
         void set(genetic::cache &source) { caches = source; }
-        void set(genetic::movement &source) { movement = source; }
+        void set(genetic::movements::movement &source) { movement = source; }
         void set(genetic::collisions &source) { collisions = source; }
         void set(genetic::inserts::insert &source) { insert = source; }
         

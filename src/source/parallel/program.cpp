@@ -59,6 +59,9 @@ void organisation::parallel::program::reset(::parallel::device &dev,
     deviceMovementIdx = sycl::malloc_device<int>(settings.max_values * settings.clients(), qt);
     if(deviceMovementIdx == NULL) return;
 
+    deviceMovementPatternIdx = sycl::malloc_device<int>(settings.max_values * settings.clients(), qt);
+    if(deviceMovementPatternIdx == NULL) return;
+
     deviceLifetime = sycl::malloc_device<int>(settings.max_values * settings.clients(), qt);
     if(deviceLifetime == NULL) return;
 
@@ -214,6 +217,7 @@ void organisation::parallel::program::clear()
     events.push_back(qt.memset(deviceValues, 0, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     events.push_back(qt.memset(deviceNextDirections, 0, sizeof(sycl::float4) * settings.max_values * settings.clients()));
     events.push_back(qt.memset(deviceMovementIdx, 0, sizeof(int) * settings.max_values * settings.clients()));
+    events.push_back(qt.memset(deviceMovementPatternIdx, 0, sizeof(int) * settings.max_values * settings.clients()));
     events.push_back(qt.memset(deviceLifetime, 0, sizeof(int) * settings.max_values * settings.clients()));
     events.push_back(qt.memset(deviceClient, 0, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     
@@ -251,7 +255,7 @@ void organisation::parallel::program::restart()
     events1.push_back(qt.memset(deviceNextHalfPositions, 0, sizeof(sycl::float4) * settings.max_values * settings.clients()));
     events1.push_back(qt.memset(deviceValues, 0, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     events1.push_back(qt.memset(deviceNextDirections, 0, sizeof(sycl::float4) * settings.max_values * settings.clients()));
-    events1.push_back(qt.memset(deviceMovementIdx, 0, sizeof(int) * settings.max_values * settings.clients()));
+    events1.push_back(qt.memset(deviceMovementIdx, 0, sizeof(int) * settings.max_values * settings.clients()));    
     events1.push_back(qt.memset(deviceLifetime, 0, sizeof(int) * settings.max_values * settings.clients()));
     events1.push_back(qt.memset(deviceClient, 0, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     events1.push_back(qt.memset(deviceTotalValues, 0, sizeof(int)));
@@ -554,10 +558,12 @@ void organisation::parallel::program::insert(int epoch, int iteration)
             auto _positions = devicePositions; 
             auto _values = deviceValues;
             auto _lifetime = deviceLifetime;
+            auto _movementPatternIdx = deviceMovementPatternIdx;
             auto _client = deviceClient;
             
             auto _srcPosition = inserter->deviceNewPositions;
             auto _srcValues = inserter->deviceNewValues;
+            auto _srcMovementPatternIdx = inserter->deviceNewMovementPatternIdx;
             auto _srcClient = inserter->deviceNewClient;
             
             auto _keys = deviceNextCollisionKeys;
@@ -582,6 +588,7 @@ void organisation::parallel::program::insert(int epoch, int iteration)
                         _positions[idx] = _srcPosition[i];
                         _values[idx] = { _srcValues[i], -1, -1, -1 };
                         _lifetime[idx] = _iteration;
+                        _movementPatternIdx[idx] = _srcMovementPatternIdx[i];
                         _client[idx] = _srcClient[i];
                     }
                 }
@@ -1021,7 +1028,7 @@ void organisation::parallel::program::debug()
     std::cout << "clients ";
     outputarb(deviceClient,totalValues);
     std::cout << "deviceInserts ";
-    outputarb(inserter->deviceInserts, settings.max_inserts * settings.clients());
+    outputarb(inserter->deviceInsertsDelay, settings.max_inserts * settings.clients());
     std::cout << "InputIdx ";
     outputarb(inserter->deviceInputIdx, settings.clients());
     std::cout << "collision keys A";
@@ -1179,6 +1186,7 @@ void organisation::parallel::program::makeNull()
     deviceNextDirections = NULL;
     
     deviceMovementIdx = NULL;
+    deviceMovementPatternIdx = NULL;
     deviceLifetime = NULL;
     deviceClient = NULL;
 
@@ -1289,6 +1297,7 @@ void organisation::parallel::program::cleanup()
         
         if(deviceClient != NULL) sycl::free(deviceClient, q);
         if(deviceLifetime != NULL) sycl::free(deviceLifetime, q);
+        if(deviceMovementPatternIdx != NULL) sycl::free(deviceMovementPatternIdx, q);
         if(deviceMovementIdx != NULL) sycl::free(deviceMovementIdx, q);
         if(deviceValues != NULL) sycl::free(deviceValues, q);
 

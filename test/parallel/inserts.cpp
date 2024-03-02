@@ -38,7 +38,7 @@ TEST(BasicProgramInsertParallel, BasicAssertions)
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert;
+    organisation::genetic::inserts::insert insert(parameters);
     insert.values = { 1,2,3 };    
     s1.prog.set(insert);
 

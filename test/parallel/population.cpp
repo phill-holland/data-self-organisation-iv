@@ -18,10 +18,10 @@ organisation::schema getSchema(organisation::parameters &parameters,
 {
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert;
+    organisation::genetic::inserts::insert insert(parameters);
     insert.values = { delay };    
 
-    organisation::genetic::movement movement;
+    organisation::genetic::movements::movement movement;
     movement.directions = { direction };
 
     organisation::genetic::cache cache(parameters);    

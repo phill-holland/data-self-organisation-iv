@@ -3,9 +3,9 @@
 #include <functional>
 #include <iostream>
 
-std::mt19937_64 organisation::genetic::movement::generator(std::random_device{}());
+std::mt19937_64 organisation::genetic::movements::movement::generator(std::random_device{}());
 
-std::string organisation::genetic::movement::serialise()
+std::string organisation::genetic::movements::movement::serialise()
 {
     std::string result;
 
@@ -17,7 +17,7 @@ std::string organisation::genetic::movement::serialise()
     return result;
 }
 
-void organisation::genetic::movement::deserialise(std::string source)
+void organisation::genetic::movements::movement::deserialise(std::string source)
 {
     std::stringstream ss(source);
     std::string str;
@@ -43,7 +43,7 @@ void organisation::genetic::movement::deserialise(std::string source)
     };
 }
 
-bool organisation::genetic::movement::validate(data &source)
+bool organisation::genetic::movements::movement::validate(data &source)
 {
     if(directions.empty()) 
     { 
@@ -71,7 +71,7 @@ bool organisation::genetic::movement::validate(data &source)
     return true;
 }
 
-void organisation::genetic::movement::generate(data &source)
+void organisation::genetic::movements::movement::generate(data &source)
 {
     int n = (std::uniform_int_distribution<int>{MIN, MAX})(generator);
 
@@ -86,7 +86,7 @@ void organisation::genetic::movement::generate(data &source)
     }
 }
 
-bool organisation::genetic::movement::mutate(data &source)
+bool organisation::genetic::movements::movement::mutate(data &source)
 {
     if(directions.empty()) return false;
 
@@ -112,7 +112,7 @@ bool organisation::genetic::movement::mutate(data &source)
     return true;
 }
 
-void organisation::genetic::movement::append(genetic *source, int src_start, int src_end)
+void organisation::genetic::movements::movement::append(genetic *source, int src_start, int src_end)
 {
     movement *s = dynamic_cast<movement*>(source);
     int length = src_end - src_start;
@@ -123,12 +123,12 @@ void organisation::genetic::movement::append(genetic *source, int src_start, int
     }   
 }
 
-void organisation::genetic::movement::copy(const movement &source)
+void organisation::genetic::movements::movement::copy(const movement &source)
 {
     directions.assign(source.directions.begin(), source.directions.end());
 }
 
-bool organisation::genetic::movement::equals(const movement &source)
+bool organisation::genetic::movements::movement::equals(const movement &source)
 {
     if(directions.size() != source.directions.size()) 
         return false;

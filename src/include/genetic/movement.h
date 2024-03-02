@@ -13,47 +13,50 @@ namespace organisation
 {
     namespace genetic
     {
-        class movement : public templates::genetic, public templates::serialiser
+        namespace movements
         {
-            static std::mt19937_64 generator;
-
-            static const int MIN = 1, MAX = 10;
-            
-        public:
-            std::vector<organisation::vector> directions;
-
-        public:
-            size_t size() { return directions.size(); }
-
-            void clear() 
+            class movement : public templates::genetic, public templates::serialiser
             {
-                directions.clear();
-            }
+                static std::mt19937_64 generator;
 
-            bool empty() 
-            {
-                return directions.empty();
-            }
+                static const int MIN = 1, MAX = 10;
+                
+            public:
+                std::vector<organisation::vector> directions;
 
-            int next(int index)
-            {
-                if(index + 1 < directions.size()) return index + 1;
-                return 0;
-            }
+            public:
+                size_t size() { return directions.size(); }
 
-            std::string serialise();
-            void deserialise(std::string source);
+                void clear() 
+                {
+                    directions.clear();
+                }
 
-            bool validate(data &source);
+                bool empty() 
+                {
+                    return directions.empty();
+                }
 
-        public:
-            void generate(data &source);
-            bool mutate(data &source);
-            void append(genetic *source, int src_start, int src_end);
+                int next(int index)
+                {
+                    if(index + 1 < directions.size()) return index + 1;
+                    return 0;
+                }
 
-        public:
-            void copy(const movement &source);
-            bool equals(const movement &source);
+                std::string serialise();
+                void deserialise(std::string source);
+
+                bool validate(data &source);
+
+            public:
+                void generate(data &source);
+                bool mutate(data &source);
+                void append(genetic *source, int src_start, int src_end);
+
+            public:
+                void copy(const movement &source);
+                bool equals(const movement &source);
+            };
         };
     };
 };

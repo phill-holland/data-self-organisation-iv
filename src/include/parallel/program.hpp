@@ -33,7 +33,8 @@ namespace organisation
             sycl::int4 *deviceValues; // ***
             sycl::float4 *deviceNextDirections;
 
-            int *deviceMovementIdx;   
+            int *deviceMovementIdx;
+            int *deviceMovementPatternIdx;   
             int *deviceLifetime;         
             sycl::int4 *deviceClient;
 

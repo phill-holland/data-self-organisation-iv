@@ -33,10 +33,10 @@ TEST(BasicSerialisationDeserialisation, BasicAssertions)
     cache.set(organisation::point(0,1,-1), organisation::point(starting.x + 1, starting.y, starting.z));
     cache.set(organisation::point(0,2,3), organisation::point(starting.x + 2, starting.y, starting.z));
     
-    organisation::genetic::inserts::insert insert;
+    organisation::genetic::inserts::insert insert(parameters);
     insert.values = { 1,2,3 };
 
-    organisation::genetic::movement movement;
+    organisation::genetic::movements::movement movement;
     movement.directions = { { 1,0,0 }, { 0,0,1 } };
 
     organisation::genetic::collisions collisions(parameters);

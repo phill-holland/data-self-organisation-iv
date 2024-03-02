@@ -23,12 +23,14 @@ namespace organisation
 
             sycl::float4 *deviceNewPositions;
             int *deviceNewValues;
+            int *deviceNewMovementPatternIdx;
             sycl::int4 *deviceNewClient;
 
             int *deviceInputData;
-            int *deviceInserts;
-            int *deviceInsertsClone;
-            int *deviceInsertsIdx;
+            int *deviceInsertsDelay;
+            int *deviceInsertsDelayClone;
+            sycl::float4 *deviceInsertsStartingPosition;
+            int *deviceInsertsMovementPatternIdx;
 
             int *deviceInputIdx;
 
@@ -36,7 +38,10 @@ namespace organisation
             int *hostTotalNewInserts;
 
             int *hostInputData;
-            int *hostInserts;
+
+            int *hostInsertsDelay;
+            sycl::float4 *hostInsertsStartingPosition;
+            int *hostInsertsMovementPatternIdx;
 
             parameters settings;
 
