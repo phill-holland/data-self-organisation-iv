@@ -36,7 +36,7 @@ TEST(BasicSerialisationDeserialisation, BasicAssertions)
     organisation::genetic::inserts::insert insert(parameters);
     insert.values = { 1,2,3 };
 
-    organisation::genetic::movements::movement movement;
+    organisation::genetic::movements::movement movement(parameters);
     movement.directions = { { 1,0,0 }, { 0,0,1 } };
 
     organisation::genetic::collisions collisions(parameters);

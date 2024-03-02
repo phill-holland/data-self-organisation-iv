@@ -46,7 +46,7 @@ namespace organisation
         bool init;
         
     public:
-        program(parameters &settings) : caches(settings), collisions(settings), insert(settings)
+        program(parameters &settings) : caches(settings), movement(settings), collisions(settings), insert(settings)
         { 
             makeNull(); 
             reset(settings); 

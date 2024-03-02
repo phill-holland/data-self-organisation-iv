@@ -79,10 +79,10 @@ void organisation::parallel::program::reset(::parallel::device &dev,
     deviceCacheClients = sycl::malloc_device<sycl::int4>(settings.max_values * settings.clients(), qt);
     if(deviceCacheClients == NULL) return;
 
-    deviceMovements = sycl::malloc_device<sycl::float4>(settings.max_movements * settings.clients(), qt);
+    deviceMovements = sycl::malloc_device<sycl::float4>(settings.max_movements * settings.max_movement_patterns * settings.clients(), qt);
     if(deviceMovements == NULL) return;
 
-    deviceMovementsCounts = sycl::malloc_device<int>(settings.clients(), qt);
+    deviceMovementsCounts = sycl::malloc_device<int>(settings.max_movement_patterns * settings.clients(), qt);
     if(deviceMovementsCounts == NULL) return;
 
     deviceCollisionCounts = sycl::malloc_device<int>(settings.epochs() * settings.clients(), qt);
@@ -113,13 +113,14 @@ void organisation::parallel::program::reset(::parallel::device &dev,
     hostCacheClients = sycl::malloc_host<sycl::int4>(settings.max_values * settings.host_buffer, qt);
     if(hostCacheClients == NULL) return;
 
-    hostMovements = sycl::malloc_host<sycl::float4>(settings.max_movements * settings.host_buffer, qt);
+    hostMovements = sycl::malloc_host<sycl::float4>(settings.max_movements * settings.max_movement_patterns * settings.host_buffer, qt);
     if(hostMovements == NULL) return;
 
-    hostMovementsCounts = sycl::malloc_host<int>(settings.host_buffer, qt);
+    hostMovementsCounts = sycl::malloc_host<int>(settings.max_movement_patterns * settings.host_buffer, qt);
     if(hostMovementsCounts == NULL) return;
     
     // ***
+
     deviceOutputValues = sycl::malloc_device<sycl::int4>(settings.max_values * settings.clients(), qt);
     if(deviceOutputValues == NULL) return;
     
@@ -225,8 +226,8 @@ void organisation::parallel::program::clear()
     events.push_back(qt.memset(deviceCacheValues, -1, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     events.push_back(qt.memset(deviceCacheClients, 0, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     
-    events.push_back(qt.memset(deviceMovements, 0, sizeof(sycl::float4) * settings.max_movements * settings.clients()));
-    events.push_back(qt.memset(deviceMovementsCounts, 0, sizeof(int) * settings.clients()));
+    events.push_back(qt.memset(deviceMovements, 0, sizeof(sycl::float4) * settings.max_movements * settings.max_movement_patterns * settings.clients()));
+    events.push_back(qt.memset(deviceMovementsCounts, 0, sizeof(int) * settings.max_movement_patterns * settings.clients()));
     events.push_back(qt.memset(deviceCollisionCounts, 0, sizeof(int) * settings.epochs() * settings.clients()));
 
     events.push_back(qt.memset(deviceNextCollisionKeys, 0, sizeof(sycl::int2) * settings.max_values * settings.clients()));
@@ -489,6 +490,7 @@ void organisation::parallel::program::next()
         auto _nextPositions = deviceNextPositions; 
         auto _client = deviceClient;
         auto _movementIdx = deviceMovementIdx;
+        auto _movementPatternIdx = deviceMovementPatternIdx;
         auto _movements = deviceMovements;
         auto _movementsCounts = deviceMovementsCounts;
         auto _collisions = collision->deviceCollisions;
@@ -497,6 +499,7 @@ void organisation::parallel::program::next()
 
         auto _max_movements = settings.max_movements;
         auto _max_collisions = settings.max_collisions;
+        auto _max_movement_patterns = settings.max_movement_patterns;
         auto _max_words = settings.mappings.maximum();
 
         h.parallel_for(num_items, [=](auto i) 
@@ -517,15 +520,16 @@ void organisation::parallel::program::next()
                 else
                 {
                     int a = _movementIdx[i];
-                    int offset = _max_movements * client;
+                    int offset = _max_movements * _max_movement_patterns * client;
+                    int movement_pattern_idx = _movementPatternIdx[i];
 
-                    sycl::float4 direction = _movements[a + offset];
+                    sycl::float4 direction = _movements[a + offset + (movement_pattern_idx * _max_movement_patterns)];
                     _nextDirections[i] = direction;            
             
                     _movementIdx[i]++;      
                     int temp = _movementIdx[i];          
                     
-                    if((temp >= _max_movements)||(temp >= _movementsCounts[client]))
+                    if((temp >= _max_movements)||(temp >= _movementsCounts[(client * _max_movement_patterns) + movement_pattern_idx]))
                         _movementIdx[i] = 0;            
                 }
             }
@@ -926,8 +930,8 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
     memset(hostCacheValues, -1, sizeof(sycl::int4) * settings.max_values * settings.host_buffer);
     memset(hostCacheClients, 0, sizeof(sycl::int4) * settings.max_values * settings.host_buffer);
 
-    memset(hostMovements, 0, sizeof(sycl::float4) * settings.max_movements * settings.host_buffer);
-    memset(hostMovementsCounts, 0, sizeof(int) * settings.host_buffer);
+    memset(hostMovements, 0, sizeof(sycl::float4) * settings.max_movements * settings.max_movement_patterns * settings.host_buffer);
+    memset(hostMovementsCounts, 0, sizeof(int) * settings.max_movement_patterns * settings.host_buffer);
     
     sycl::queue& qt = ::parallel::queue::get_queue(*dev, queue);
     sycl::range num_items{(size_t)settings.clients()};
@@ -956,14 +960,24 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
             if(d_count >= settings.max_values) break;
         }
 
-        int m_count = 0;
+        //int m_count = 0;
         for(auto &it: prog->movement.directions)
         {            
-            hostMovements[m_count + (index * settings.max_movements)] = { (float)it.x, (float)it.y, (float)it.z, 0.0f };
-            ++m_count;
-            if(m_count >= settings.max_movements) break;            
+            int pattern = std::get<0>(it);
+            vector direction = std::get<1>(it);
+
+            int offset = pattern * settings.max_movement_patterns;
+            //int m_count = hostMovementsCounts[(index * settings.max_movement_patterns) + pattern];
+
+            if(hostMovementsCounts[(index * settings.max_movement_patterns) + pattern] < settings.max_movements)
+            {
+                hostMovements[(index * settings.max_movements * settings.max_movement_patterns) + offset] = { (float)direction.x, (float)direction.y, (float)direction.z, 0.0f };
+                hostMovementsCounts[(index * settings.max_movement_patterns) + pattern] += 1;
+            }
+            //++m_count;
+            //if(m_count >= settings.max_movements) break;            
         }
-        hostMovementsCounts[index] = m_count;
+        //hostMovementsCounts[index] = m_count;
 
         ++index;
         ++client_index;
@@ -976,8 +990,8 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
             events.push_back(qt.memcpy(&deviceCacheValues[dest_index * settings.max_values], hostCacheValues, sizeof(sycl::int4) * settings.max_values * index));
             events.push_back(qt.memcpy(&deviceCacheClients[dest_index * settings.max_values], hostCacheClients, sizeof(sycl::int4) * settings.max_values * index));
 
-            events.push_back(qt.memcpy(&deviceMovements[dest_index * settings.max_movements], hostMovements, sizeof(sycl::float4) * settings.max_movements * index));
-            events.push_back(qt.memcpy(&deviceMovementsCounts[dest_index], hostMovementsCounts, sizeof(int) * index));
+            events.push_back(qt.memcpy(&deviceMovements[dest_index * settings.max_movements * settings.max_movement_patterns], hostMovements, sizeof(sycl::float4) * settings.max_movements * settings.max_movement_patterns * index));
+            events.push_back(qt.memcpy(&deviceMovementsCounts[dest_index * settings.max_movement_patterns], hostMovementsCounts, sizeof(int) * settings.max_movement_patterns * index));
 
             sycl::event::wait(events);
             
@@ -985,8 +999,8 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
             memset(hostCacheValues, -1, sizeof(sycl::int4) * settings.max_values * settings.host_buffer);
             memset(hostCacheClients, 0, sizeof(sycl::int4) * settings.max_values * settings.host_buffer);
             
-            memset(hostMovements, 0, sizeof(sycl::float4) * settings.max_movements * settings.host_buffer);
-            memset(hostMovementsCounts, 0, sizeof(int) * settings.host_buffer);
+            memset(hostMovements, 0, sizeof(sycl::float4) * settings.max_movements * settings.max_movement_patterns * settings.host_buffer);
+            memset(hostMovementsCounts, 0, sizeof(int) * settings.max_movement_patterns * settings.host_buffer);
                         
             dest_index += settings.host_buffer;
             index = 0;            
@@ -1001,8 +1015,8 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
         events.push_back(qt.memcpy(&deviceCacheValues[dest_index * settings.max_values], hostCacheValues, sizeof(sycl::int4) * settings.max_values * index));
         events.push_back(qt.memcpy(&deviceCacheClients[dest_index * settings.max_values], hostCacheClients, sizeof(sycl::int4) * settings.max_values * index));
 
-        events.push_back(qt.memcpy(&deviceMovements[dest_index * settings.max_movements], hostMovements, sizeof(sycl::float4) * settings.max_movements * index));
-        events.push_back(qt.memcpy(&deviceMovementsCounts[dest_index], hostMovementsCounts, sizeof(int) * index));
+        events.push_back(qt.memcpy(&deviceMovements[dest_index * settings.max_movements * settings.max_movement_patterns], hostMovements, sizeof(sycl::float4) * settings.max_movements * settings.max_movement_patterns * index));
+        events.push_back(qt.memcpy(&deviceMovementsCounts[dest_index * settings.max_movement_patterns], hostMovementsCounts, sizeof(int) * settings.max_movement_patterns * index));
         
         sycl::event::wait(events);
     }    

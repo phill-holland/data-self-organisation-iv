@@ -3,7 +3,9 @@
 #include "point.h"
 #include "vector.h"
 #include "data.h"
+#include "parameters.h"
 #include <vector>
+#include <tuple>
 #include <random>
 
 #ifndef _ORGANISATION_GENETIC_MOVEMENT
@@ -15,14 +17,47 @@ namespace organisation
     {
         namespace movements
         {
+            /*
+            class value
+            {
+            public:
+                std::vector<organisation::vector> directions;
+
+            public:
+                void clear()
+                {
+                    directions.clear();
+                }
+
+            public:
+                bool operator==(const value &src) const
+                {
+                    return directions == src.directions;
+                }
+            };
+            */
+
             class movement : public templates::genetic, public templates::serialiser
             {
                 static std::mt19937_64 generator;
 
-                static const int MIN = 1, MAX = 10;
-                
+                //static const int MIN = 1, MAX = 10;
+                int _min_movements, _max_movements;
+                int _max_movement_patterns;
+
             public:
-                std::vector<organisation::vector> directions;
+            // generate all settings.max_movement_patterns
+                //std::vector<organisation::vector> directions;
+                std::vector<std::tuple<int,organisation::vector>> directions;
+                //std::unordered
+
+            public:
+                movement(parameters &settings)
+                {
+                    _min_movements = settings.min_movements;
+                    _max_movements = settings.max_movements;
+                    _max_movement_patterns = settings.max_movement_patterns;
+                }
 
             public:
                 size_t size() { return directions.size(); }

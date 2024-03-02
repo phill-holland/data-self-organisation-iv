@@ -21,7 +21,7 @@ organisation::schema getSchema(organisation::parameters &parameters,
     organisation::genetic::inserts::insert insert(parameters);
     insert.values = { delay };    
 
-    organisation::genetic::movements::movement movement;
+    organisation::genetic::movements::movement movement(parameters);
     movement.directions = { direction };
 
     organisation::genetic::cache cache(parameters);    

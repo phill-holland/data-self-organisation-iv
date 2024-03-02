@@ -15,6 +15,7 @@ namespace organisation
         const static int DEPTH = 5;
 
         const static int MAX_VALUES = 20;
+        const static int MIN_MOVEMENTS = 1;
         const static int MAX_MOVEMENTS = 30;
         const static int MAX_COLLISIONS = 27;
         const static int MAX_INSERTS = 10;
@@ -22,6 +23,9 @@ namespace organisation
         const static int MAX_CACHE = 10;
         const static int MAX_CACHE_DIMENSION = 3;
         const static int MAX_MOVEMENT_PATTERNS = 3;
+
+        const static int MIN_INSERT_DELAY = 1;
+        const static int MAX_INSERT_DELAY = 5;
 
         const static int HOST_BUFFER = 20;
 
@@ -34,6 +38,7 @@ namespace organisation
 
     public:
         int max_values;
+        int min_movements;
         int max_movements;
         int max_collisions;
         int max_inserts;
@@ -41,6 +46,9 @@ namespace organisation
         int max_cache;
         int max_cache_dimension;
         int max_movement_patterns;
+
+        int min_insert_delay;
+        int max_insert_delay;
 
         int host_buffer;
 
@@ -72,6 +80,7 @@ namespace organisation
             depth = _depth;
 
             max_values = MAX_VALUES;
+            min_movements = MIN_MOVEMENTS;
             max_movements = MAX_MOVEMENTS;
             max_collisions = MAX_COLLISIONS;
             max_inserts = MAX_INSERTS;
@@ -80,6 +89,9 @@ namespace organisation
             max_cache_dimension = MAX_CACHE_DIMENSION;
             max_movement_patterns = MAX_MOVEMENT_PATTERNS;
         
+            min_insert_delay = MIN_INSERT_DELAY;
+            max_insert_delay = MAX_INSERT_DELAY;
+
             host_buffer = HOST_BUFFER;
 
             iterations = ITERATIONS;

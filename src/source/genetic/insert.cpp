@@ -9,7 +9,7 @@ void organisation::genetic::inserts::insert::generate(data &source)
 {
     clear();
 
-    int length = (std::uniform_int_distribution<int>{1, LENGTH})(generator);
+    int length = (std::uniform_int_distribution<int>{1, _max_movement_patterns})(generator);
 
     std::unordered_map<int, point> duplicates;
 
@@ -17,7 +17,7 @@ void organisation::genetic::inserts::insert::generate(data &source)
     {
         value temp;
 
-        temp.delay = (std::uniform_int_distribution<int>{MIN, MAX})(generator);
+        temp.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
         temp.movementPatternIdx = (std::uniform_int_distribution<int>{0, _max_movement_patterns - 1})(generator);
         temp.starting.generate(_width,_height,_depth);
 
@@ -46,7 +46,7 @@ bool organisation::genetic::inserts::insert::mutate(data &source)
 
         if(mode == 0)
         {
-            val.delay = (std::uniform_int_distribution<int>{MIN, MAX})(generator);
+            val.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
         }
         else if(mode == 1)
         {
@@ -152,7 +152,7 @@ bool organisation::genetic::inserts::insert::validate(data &source)
 
     for(auto &it: values)
     {
-        if((it.delay < MIN)||(it.delay > MAX))
+        if((it.delay < _min_insert_delay)||(it.delay > _max_insert_delay))
         { 
             std::cout << "insert::validate(false): delay out of bounds\r\n"; 
             return false; 

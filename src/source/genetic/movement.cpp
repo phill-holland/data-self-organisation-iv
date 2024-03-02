@@ -11,7 +11,12 @@ std::string organisation::genetic::movements::movement::serialise()
 
     for(auto &it: directions)
     {
-        result += "M " + it.serialise() + "\n";
+        int index = std::get<0>(it);
+        organisation::vector direction = std::get<1>(it);
+    
+        result += "M " + direction.serialise();
+        result += " " + std::to_string(index);
+        result += "\n";
     }
 
     return result;
@@ -25,6 +30,8 @@ void organisation::genetic::movements::movement::deserialise(std::string source)
     int value = 0;
     int index = 0;
 
+    organisation::vector temp;
+
     while(std::getline(ss,str,' '))
     {
         if(index == 0)
@@ -33,10 +40,13 @@ void organisation::genetic::movements::movement::deserialise(std::string source)
         }
         else if(index == 1)
         {
-            organisation::vector temp;
-
+            temp.clear();
             temp.deserialise(str);
-            directions.push_back(temp);            
+        }
+        else if(index == 2)
+        {
+            int pattern_index = std::atoi(str.c_str());
+            directions.push_back(std::tuple<int,vector>(pattern_index,temp));
         }
 
         ++index;
@@ -51,19 +61,29 @@ bool organisation::genetic::movements::movement::validate(data &source)
         return false; 
     }
 
+    int previous = 0;
     for(auto &it: directions)
     {
-/*        if(it.isempty())
-        { 
-            std::cout << "movement::validate(false): direction going nowhere\r\n"; 
-            return false; 
-        }
-*/
-        if((it.x < -1)||(it.x > 1)
-            ||(it.y < -1)||(it.y > 1)
-            ||(it.z < -1)||(it.z > 1))
+        int index = std::get<0>(it);
+        if((index != previous)&&(previous + 1 != index))
         {
-            std::cout << "movement::validate(false): direction out of bounds (" << it.x << "," << it.y << "," << it.z << ")\r\n"; 
+            std::cout << "movement::validate(false): indices not sequential (" << index << "," << previous << ")\r\n"; 
+            return false;
+        }
+
+        if(index >= _max_movement_patterns)
+        {
+            std::cout << "movement::validate(false): index exceeds max allowed movement patterns (" << index << "," << _max_movement_patterns << ")\r\n"; 
+            return false;
+        }
+
+        vector direction = std::get<1>(it);
+
+        if((direction.x < -1)||(direction.x > 1)
+            ||(direction.y < -1)||(direction.y > 1)
+            ||(direction.z < -1)||(direction.z > 1))
+        {
+            std::cout << "movement::validate(false): direction out of bounds (" << direction.x << "," << direction.y << "," << direction.z << ")\r\n"; 
             return false;
         }
     }
@@ -73,15 +93,19 @@ bool organisation::genetic::movements::movement::validate(data &source)
 
 void organisation::genetic::movements::movement::generate(data &source)
 {
-    int n = (std::uniform_int_distribution<int>{MIN, MAX})(generator);
-
-    for(int i = 0; i < n; ++i)
+    int total_patterns = (std::uniform_int_distribution<int>{1, _max_movement_patterns - 1})(generator);
+    for(int j = 0; j < total_patterns; ++j)
     {
-        int value = (std::uniform_int_distribution<int>{0, 26})(generator);
-        vector v1;
-        if(v1.decode(value))
+        int n = (std::uniform_int_distribution<int>{_min_movements, _max_movements - 1})(generator);
+
+        for(int i = 0; i < n; ++i)
         {
-            directions.push_back(v1);
+            int value = (std::uniform_int_distribution<int>{0, 26})(generator);
+            vector v1;
+            if(v1.decode(value))
+            {
+                directions.push_back(std::tuple<int,organisation::vector>(j,v1));
+            }
         }
     }
 }
@@ -101,10 +125,10 @@ bool organisation::genetic::movements::movement::mutate(data &source)
         n = (std::uniform_int_distribution<int>{0, (int)(directions.size() - 1)})(generator);
         value = (std::uniform_int_distribution<int>{0, 26})(generator);
 
-        old = directions[n].encode();
+        old = std::get<1>(directions[n]).encode();
         vector v1;
         v1.decode(value);
-        directions[n] = v1;   
+        std::get<1>(directions[n]) = v1;   
     } while((old == value)&&(counter++<COUNTER));    
     
     if(old==value) return false;
@@ -117,9 +141,21 @@ void organisation::genetic::movements::movement::append(genetic *source, int src
     movement *s = dynamic_cast<movement*>(source);
     int length = src_end - src_start;
     
+    int new_index = 0;
+    if(directions.size() > 0) new_index = std::get<0>(directions[directions.size() - 1]) + 1;
+
+    int previous_index = 0;
     for(int i = 0; i < length; ++i)
     {
-        directions.push_back(s->directions[src_start + i]);
+        int current_index = std::get<0>(s->directions[src_start + i]);
+        vector current_direction = std::get<1>(s->directions[src_start + i]);
+
+        if((i != 0)&&(previous_index != current_index))
+            ++new_index;
+
+        directions.push_back(std::tuple<int,vector>(new_index, current_direction));
+
+        previous_index = current_index;
     }   
 }
 

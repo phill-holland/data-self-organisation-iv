@@ -57,12 +57,10 @@ namespace organisation
             class insert : public templates::genetic, public templates::serialiser
             {
                 static std::mt19937_64 generator;
-
-                const static int LENGTH = 15;         
-                const static int MIN = 1;            
-                const static int MAX = 5;
-                
+                                     
                 int _width, _height, _depth;                
+                
+                int _min_insert_delay, _max_insert_delay;
                 int _max_movement_patterns;
 
             public:
@@ -75,6 +73,8 @@ namespace organisation
                     _height = settings.height;
                     _depth = settings.depth;
 
+                    _min_insert_delay = settings.min_insert_delay;
+                    _max_insert_delay = settings.max_insert_delay;
                     _max_movement_patterns = settings.max_movement_patterns;
                 }
 
