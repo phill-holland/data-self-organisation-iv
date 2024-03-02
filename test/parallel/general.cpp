@@ -13,7 +13,7 @@ organisation::schema getSchema1(organisation::parameters &parameters, organisati
 {
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { 1,2,3 };    
 
     organisation::genetic::movement movement;
@@ -46,7 +46,7 @@ organisation::schema getSchema2(organisation::parameters &parameters, organisati
 {
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { 1,2,3 };    
 
     organisation::genetic::movement movement;
@@ -81,7 +81,7 @@ organisation::schema getSchema3(organisation::parameters &parameters,
 {
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { delay };    
 
     organisation::genetic::movement movement;
@@ -107,7 +107,7 @@ organisation::schema getSchema4(organisation::parameters &parameters,
 {
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { delay };    
 
     organisation::genetic::movement movement;
@@ -142,7 +142,7 @@ organisation::schema getSchema5(organisation::parameters &parameters,
 {
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { delay };    
 
     organisation::genetic::movement movement;
@@ -252,7 +252,7 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
         
         organisation::schema s1(parameters);
 
-        organisation::genetic::insert insert;
+        organisation::genetic::inserts::insert insert;
         insert.values = { 1,2,3 };    
 
         organisation::genetic::movement movement;
@@ -370,7 +370,7 @@ TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions
     organisation::schema s1(parameters);
     organisation::schema s2(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { 2,2,2 };    
 
     organisation::vector up(0,1,0);
@@ -667,7 +667,7 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { 1,2,3 };    
 
     organisation::genetic::movement movement;
@@ -775,7 +775,7 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { 1,2,3 };    
 
     organisation::genetic::movement movement;
@@ -1211,7 +1211,7 @@ TEST(BasicProgramDataSwapParallel, BasicAssertions)
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::insert insert;
+    organisation::genetic::inserts::insert insert;
     insert.values = { 1,8 };    
 
     organisation::genetic::movement movement;

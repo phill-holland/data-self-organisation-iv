@@ -39,7 +39,7 @@ namespace organisation
         genetic::cache caches;
         genetic::movement movement;
         genetic::collisions collisions;
-        genetic::insert insert;
+        genetic::inserts::insert insert;
 
         int length;
 
@@ -60,7 +60,7 @@ namespace organisation
         void set(genetic::cache &source) { caches = source; }
         void set(genetic::movement &source) { movement = source; }
         void set(genetic::collisions &source) { collisions = source; }
-        void set(genetic::insert &source) { insert = source; }
+        void set(genetic::inserts::insert &source) { insert = source; }
         
     public:
         void clear();

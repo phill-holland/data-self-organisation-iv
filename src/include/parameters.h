@@ -21,6 +21,7 @@ namespace organisation
         const static int MAX_INPUT_DATA =  15;
         const static int MAX_CACHE = 10;
         const static int MAX_CACHE_DIMENSION = 3;
+        const static int MAX_MOVEMENT_PATTERNS = 3;
 
         const static int HOST_BUFFER = 20;
 
@@ -39,6 +40,7 @@ namespace organisation
         int max_input_data;
         int max_cache;
         int max_cache_dimension;
+        int max_movement_patterns;
 
         int host_buffer;
 
@@ -76,6 +78,7 @@ namespace organisation
             max_input_data = MAX_INPUT_DATA;
             max_cache = MAX_CACHE;
             max_cache_dimension = MAX_CACHE_DIMENSION;
+            max_movement_patterns = MAX_MOVEMENT_PATTERNS;
         
             host_buffer = HOST_BUFFER;
 

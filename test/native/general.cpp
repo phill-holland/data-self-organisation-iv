@@ -65,7 +65,7 @@ TEST(BasicMovementAndCollisionDetection, BasicAssertions)
         organisation::genetic::cache cache(width, height, depth);
         cache.set(0, std::get<0>(it));
         
-        organisation::genetic::insert insert;
+        organisation::genetic::inserts::insert insert;
         insert.values = { 1,2,3 };
 
         organisation::genetic::movement movement;
