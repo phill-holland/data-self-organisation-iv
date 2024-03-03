@@ -75,6 +75,7 @@ namespace organisation
 
         protected:
             void outputarb(int *source, int length);
+            void outputarb(sycl::float4 *source, int length);
 
         protected:
             void makeNull();

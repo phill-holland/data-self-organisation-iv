@@ -1188,7 +1188,6 @@ void organisation::parallel::program::outputarb(sycl::float4 *source, int length
 	delete[] temp;
 }
 
-
 void organisation::parallel::program::makeNull()
 {
     dev = NULL;
