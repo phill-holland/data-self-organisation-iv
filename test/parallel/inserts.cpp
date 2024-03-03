@@ -39,7 +39,15 @@ TEST(BasicProgramInsertParallel, BasicAssertions)
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 1,2,3 };    
+
+    organisation::point starting(width/2,height/2,depth/2);
+
+    organisation::genetic::inserts::value a(1, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value b(2, organisation::point(starting.x,starting.y+1,starting.z), 0);
+    organisation::genetic::inserts::value c(3, organisation::point(starting.x,starting.y+3,starting.z), 0);
+
+    //insert.values = { 1,2,3 };    
+    insert.values = { a, b, c };
     s1.prog.set(insert);
 
     std::vector<organisation::schema*> source = { &s1 };
@@ -58,8 +66,10 @@ TEST(BasicProgramInsertParallel, BasicAssertions)
         EXPECT_EQ(expected_insert_counts1[i], count);
         EXPECT_EQ(data.size(), count);
 
+std::cout << "i: " << i << " count:" << count << "\r\n";
         if(count > 0) 
         { 
+std::cout << "x,y,z " << data[0].position.serialise() << "\r\n";         
             EXPECT_EQ(expected_insert_value1[i], data[0].data.x);
             EXPECT_EQ(organisation::point(width / 2, height / 2, depth / 2),data[0].position);
             EXPECT_EQ(0, data[0].client);

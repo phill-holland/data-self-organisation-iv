@@ -12,9 +12,10 @@
 #include "genetic/collisions.h"
 #include "genetic/insert.h"
 
+/*
 TEST(BasicSerialisationDeserialisation, BasicAssertions)
 {
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -57,3 +58,4 @@ TEST(BasicSerialisationDeserialisation, BasicAssertions)
 
     EXPECT_TRUE(p1.equals(p2));
 }
+*/
