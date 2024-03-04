@@ -97,7 +97,7 @@ void organisation::parallel::inserts::clear()
 int organisation::parallel::inserts::insert(int epoch)
 {
     sycl::queue& qt = ::parallel::queue::get_queue(*dev, queue);
-    sycl::range num_items{(size_t)settings.clients()};//length};
+    sycl::range num_items{(size_t)settings.clients()};
 
     qt.memset(deviceTotalNewInserts, 0, sizeof(int)).wait();
 
@@ -124,16 +124,12 @@ int organisation::parallel::inserts::insert(int epoch)
         auto _movementPatternIdx = deviceNewMovementPatternIdx;
         auto _clients = deviceNewClient;
 
-        //auto _starting = starting;
-
         auto _epoch_offset = epoch_offset;
 
         auto _max_inserts = settings.max_inserts;
         auto _dim_clients = dim_clients;
 
         auto _length = length;
-
-sycl::stream out(8192, 1024, h);
 
         h.parallel_for(num_items, [=](auto client) 
         {
@@ -143,42 +139,27 @@ sycl::stream out(8192, 1024, h);
             {
                 if(_insertsMovementPatternIdx[i + offset] != -1)
                 {
-                //out << "offset " << offset << " i " << ((int)i) << "\n";
                     if(_inputData[_inputIdx[client] + epoch_offset] == -1) return;
                                         
-                    //int a = _insertsIdx[client];            
-                    //_inserts[a + offset]--;
-
-                //out << "_inserts[i + offset] " << _inserts[i + offset] << "\n";
                     _inserts[i + offset]--;
 
-                    //if(_inserts[a + offset] < 0)
                     if(_inserts[i + offset] < 0)
                     {                
-                        //_insertsIdx[client]++;
                         int b = _inputIdx[client];
                         int newValueToInsert = _inputData[b + epoch_offset];
                         _inputIdx[client]++;
 
-                        //if(_inserts[_insertsIdx[client]] == -1)
-                            //_insertsIdx[client] = 0;
-
-                        //_inserts[a + offset] = _insertsClone[a + offset];
                         _inserts[i + offset] = _insertsClone[i + offset];
 
                         cl::sycl::atomic_ref<int, cl::sycl::memory_order::relaxed, 
                                                     sycl::memory_scope::device, 
                                                     sycl::access::address_space::ext_intel_global_device_space> ar(_totalNewInserts[0]);
 
-                        out << "insert value: " << newValueToInsert << " " << _insertsStartingPosition[offset + i].x() << "," << _insertsStartingPosition[offset + i].y() << "," << _insertsStartingPosition[offset + i].z() << "\n";
-
                         int dest = ar.fetch_add(1);
                         if(dest < _length)                
-                        {
-                        
-                    out << "insertOK\n";
+                        {                    
                             _values[dest] = newValueToInsert;
-                            _positions[dest] = _insertsStartingPosition[offset + i];//starting;
+                            _positions[dest] = _insertsStartingPosition[offset + i];
                             _movementPatternIdx[dest] = _insertsMovementPatternIdx[offset + i];
                             _clients[dest] = MapClientIdx(client, _dim_clients);
                         }
@@ -189,7 +170,20 @@ sycl::stream out(8192, 1024, h);
     }).wait();
 
     qt.memcpy(hostTotalNewInserts, deviceTotalNewInserts, sizeof(int)).wait();
+
+/*
+if(hostTotalNewInserts[0]>0)
+{
+    std::cout << "new positions: ";
+    outputarb(deviceNewPositions,hostTotalNewInserts[0]);
+    std::cout << "new values: ";
+    outputarb(deviceNewValues,hostTotalNewInserts[0]);
+    std::cout << "new move: ";
+outputarb(deviceNewMovementPatternIdx,hostTotalNewInserts[0]);
+}
+*/
     return hostTotalNewInserts[0];
+
 }
 
 void organisation::parallel::inserts::set(organisation::data &mappings, inputs::input &source)
@@ -285,12 +279,12 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
             events.push_back(qt.memcpy(&deviceInsertsStartingPosition[dest_index * settings.max_inserts], hostInsertsStartingPosition, sizeof(sycl::float4) * settings.max_inserts * index));
             events.push_back(qt.memcpy(&deviceInsertsMovementPatternIdx[dest_index * settings.max_inserts], hostInsertsMovementPatternIdx, sizeof(int) * settings.max_inserts * index));
 
+            sycl::event::wait(events);
+
             memset(hostInsertsDelay, -1, sizeof(int) * settings.max_inserts * settings.host_buffer);
             memset(hostInsertsStartingPosition, 0, sizeof(sycl::float4) * settings.max_inserts * settings.host_buffer);
             memset(hostInsertsMovementPatternIdx, -1, sizeof(int) * settings.max_inserts * settings.host_buffer);
-
-            sycl::event::wait(events);
-
+                
             dest_index += settings.host_buffer;
             index = 0;            
         }
@@ -309,14 +303,19 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
 
     qt.memcpy(deviceInsertsDelayClone, deviceInsertsDelay, sizeof(int) * settings.max_inserts * settings.clients()).wait();
 
-    std::cout << "delay: ";
-    outputarb(deviceInsertsDelay, settings.max_inserts * settings.clients());
+/*
+    std::cout << "delays: ";
+    outputarb(deviceInsertsDelay,settings.max_inserts * settings.clients());
 
-    std::cout << "positions: ";
-    outputarb(deviceInsertsStartingPosition, settings.max_inserts * settings.clients());
+    std::cout << "position: ";
+    outputarb(deviceInsertsStartingPosition,settings.max_inserts * settings.clients());
 
-    std::cout << "pattern idx: ";
-    outputarb(deviceInsertsMovementPatternIdx, settings.max_inserts * settings.clients());
+    std::cout << "pattern: ";
+    outputarb(deviceInsertsMovementPatternIdx,settings.max_inserts * settings.clients());
+
+    std::cout << "clone: ";
+    outputarb(deviceInsertsDelayClone,settings.max_inserts * settings.clients());
+*/
 }
 
 void organisation::parallel::inserts::outputarb(int *source, int length)

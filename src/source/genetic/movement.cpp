@@ -5,6 +5,14 @@
 
 std::mt19937_64 organisation::genetic::movements::movement::generator(std::random_device{}());
 
+void organisation::genetic::movements::movement::set(int pattern, std::vector<organisation::vector> &source)
+{
+    for(auto &it: source)
+    {
+        directions.push_back(std::tuple<int,organisation::vector>(pattern,it));
+    }
+}
+
 std::string organisation::genetic::movements::movement::serialise()
 {
     std::string result;

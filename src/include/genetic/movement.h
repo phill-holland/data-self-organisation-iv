@@ -78,11 +78,13 @@ namespace organisation
                     return 0;
                 }
 
+                void set(int pattern, std::vector<organisation::vector> &source);
+
                 std::string serialise();
                 void deserialise(std::string source);
 
                 bool validate(data &source);
-
+                
             public:
                 void generate(data &source);
                 bool mutate(data &source);

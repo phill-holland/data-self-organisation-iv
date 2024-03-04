@@ -12,7 +12,6 @@
 #include "genetic/collisions.h"
 #include "genetic/insert.h"
 
-/*
 TEST(BasicSerialisationDeserialisation, BasicAssertions)
 {
     GTEST_SKIP();
@@ -35,10 +34,19 @@ TEST(BasicSerialisationDeserialisation, BasicAssertions)
     cache.set(organisation::point(0,2,3), organisation::point(starting.x + 2, starting.y, starting.z));
     
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 1,2,3 };
+
+    organisation::genetic::inserts::value a(1, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value b(2, organisation::point(starting.x + 1,starting.y,starting.z), 1);
+    organisation::genetic::inserts::value c(3, organisation::point(starting.x + 2,starting.y,starting.z), 0);
+
+    insert.values = { a, b, c };
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { { 1,0,0 }, { 0,0,1 } };
+    std::vector<organisation::vector> m1 = { { 1,0,0 }, { 0,0,1 } };
+    std::vector<organisation::vector> m2 = { { 0,1,0 }, { -1,0,0 }, { 0,0,-1} };
+
+    movement.set(0,m1);
+    movement.set(1,m2);    
 
     organisation::genetic::collisions collisions(parameters);
 
@@ -58,4 +66,3 @@ TEST(BasicSerialisationDeserialisation, BasicAssertions)
 
     EXPECT_TRUE(p1.equals(p2));
 }
-*/

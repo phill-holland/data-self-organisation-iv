@@ -9,16 +9,19 @@
 #include "statistics.h"
 #include <unordered_map>
 
-/*
 organisation::schema getSchema1(organisation::parameters &parameters, organisation::point value)
 {
+    organisation::point starting(parameters.width / 2, parameters.height / 2, parameters.depth / 2);
+
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 1,2,3 };    
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    insert.values = { a };    
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { { 1,0,0 }, { 1,0,0 } };
+    std::vector<organisation::vector> m1 = { { 1,0,0 }, { 1,0,0 } };
+    movement.set(0,m1);
 
     organisation::genetic::cache cache(parameters);
     cache.set(value, organisation::point(18,10,10));
@@ -45,14 +48,18 @@ organisation::schema getSchema1(organisation::parameters &parameters, organisati
 
 organisation::schema getSchema2(organisation::parameters &parameters, organisation::point value)
 {
+    organisation::point starting(parameters.width / 2, parameters.height / 2, parameters.depth / 2);
+
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 1,2,3 };    
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    insert.values = { a };   
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { { 0,1,0 }, { 0,1,0 } };
-
+    std::vector<organisation::vector> m1 = { { 0,1,0 }, { 0,1,0 } };
+    movement.set(0,m1);
+    
     organisation::genetic::cache cache(parameters);
     cache.set(value, organisation::point(10,18,10));
 
@@ -80,13 +87,17 @@ organisation::schema getSchema3(organisation::parameters &parameters,
                                 std::vector<organisation::vector> direction,
                                 int delay)
 {
+    organisation::point starting(parameters.width / 2, parameters.height / 2, parameters.depth / 2);
+
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { delay };    
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
+    insert.values = { a };   
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = direction;
+    std::vector<organisation::vector> m1 = direction;
+    movement.set(0,m1);
 
     organisation::genetic::cache cache(parameters);    
     organisation::genetic::collisions collisions(parameters);
@@ -106,13 +117,17 @@ organisation::schema getSchema4(organisation::parameters &parameters,
                                 int value,
                                 int delay)
 {
+    organisation::point starting(parameters.width / 2, parameters.height / 2, parameters.depth / 2);
+
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { delay };    
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
+    insert.values = { a };   
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { direction };
+    std::vector<organisation::vector> m1 = { direction };
+    movement.set(0,m1);
 
     organisation::genetic::cache cache(parameters);    
     cache.set(organisation::point(value,-1,-1), wall);
@@ -141,16 +156,20 @@ organisation::schema getSchema5(organisation::parameters &parameters,
                                 int value,
                                 int delay)
 {
+    organisation::point starting(parameters.width / 2, parameters.height / 2, parameters.depth / 2);
+
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { delay };    
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
+    insert.values = { a };   
 
     organisation::genetic::movements::movement movement(parameters);
     organisation::vector _direction;
     _direction.decode(direction);
-    movement.directions = { _direction };
-
+    std::vector<organisation::vector> m1 = { _direction };
+    movement.set(0,m1);
+    
     organisation::point wall(parameters.width/2,parameters.height/2,parameters.depth/2);
     for(int i = 0; i < iteration; ++i)
     {
@@ -182,7 +201,7 @@ organisation::schema getSchema5(organisation::parameters &parameters,
 
 TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -237,7 +256,7 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
     organisation::parameters parameters(width, height, depth);
     parameters.mappings = mappings;
     parameters.dim_clients = organisation::point(1,1,1);
-    parameters.iterations = 30;
+    parameters.iterations = 40;
 
     organisation::inputs::epoch epoch1(input1);
     parameters.input.push_back(epoch1);
@@ -254,10 +273,12 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
         organisation::schema s1(parameters);
 
         organisation::genetic::inserts::insert insert(parameters);
-        insert.values = { 1,2,3 };    
+        organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+        insert.values = { a };
 
         organisation::genetic::movements::movement movement(parameters);
-        movement.directions = { std::get<1>(it) };
+        std::vector<organisation::vector> m1 = { std::get<1>(it) };
+        movement.set(0, m1);
 
         organisation::genetic::cache cache(parameters);
         cache.set(organisation::point(0,-1,-1), std::get<0>(it));
@@ -314,7 +335,7 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
 
 TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 60, height = 60, depth = 60;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -372,13 +393,16 @@ TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions
     organisation::schema s2(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 2,2,2 };    
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+
+    insert.values = { a };
 
     organisation::vector up(0,1,0);
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { up };
-
+    std::vector<organisation::vector> m1 = { up };
+    movement.set(0, m1);
+    
     organisation::genetic::cache cache(parameters);
     cache.set(organisation::point(0, -1, -1), organisation::point(starting.x,starting.y + 8,starting.z));
 
@@ -472,10 +496,9 @@ TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions
     EXPECT_EQ(lookup[1], values2);
 }
 
-
 TEST(BasicProgramMovementWithTwoClientsAndTwoEpochsParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -501,7 +524,7 @@ TEST(BasicProgramMovementWithTwoClientsAndTwoEpochsParallel, BasicAssertions)
     organisation::parameters parameters(width, height, depth);
     
     parameters.dim_clients = organisation::point(2,1,1);
-    parameters.iterations = 30;
+    parameters.iterations = 40;
     parameters.mappings = mappings;
 
     organisation::inputs::epoch epoch1(input1);
@@ -553,7 +576,7 @@ TEST(BasicProgramMovementWithTwoClientsAndTwoEpochsParallel, BasicAssertions)
 
 TEST(BasicProgramMovementMultiCellOutputParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -579,7 +602,7 @@ TEST(BasicProgramMovementMultiCellOutputParallel, BasicAssertions)
     organisation::parameters parameters(width, height, depth);
     
     parameters.dim_clients = organisation::point(2,1,1);
-    parameters.iterations = 30;
+    parameters.iterations = 40;
     parameters.mappings = mappings;
 
     organisation::inputs::epoch epoch1(input1);
@@ -631,16 +654,17 @@ TEST(BasicProgramMovementMultiCellOutputParallel, BasicAssertions)
 
 TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
+    const organisation::point starting(width / 2, height / 2, depth / 2);
 
     std::string data1("daisy daisy give me your answer do please do .");
     std::string input1("give me your .");
     
     std::vector<std::vector<std::string>> expected = {
         { 
-            "daisydaisydaisygivedaisygivedaisygivedaisygivemedaisygivemeyourdaisygivemeyourdaisy"
+            "daisydaisydaisygivedaisygivedaisygivemedaisygivemedaisygivemeyourdaisygivemeyour" 
         }
     };
 
@@ -653,14 +677,14 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
     organisation::parameters parameters(width, height, depth);
     
     parameters.dim_clients = organisation::point(1,1,1);
-    parameters.iterations = 20;
+    parameters.iterations = 30;
     parameters.mappings = mappings;
 
     organisation::inputs::epoch epoch1(input1);
     parameters.input.push_back(epoch1);
 
     parallel::mapper::configuration mapper;
-    mapper.origin = organisation::point(width / 2, height / 2, depth / 2);
+    mapper.origin = starting;
 
     organisation::parallel::program program(device, &queue, mapper, parameters);
     
@@ -669,11 +693,13 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 1,2,3 };    
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    insert.values = { a };
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { { 1,0,0 }, { 1,0,0 } };
-
+    std::vector<organisation::vector> m1 = { { 1,0,0 }, { 1,0,0 } };
+    movement.set(0,m1);
+    
     organisation::genetic::cache cache(parameters);
     cache.set(organisation::point(0,-1,-1), organisation::point(18,10,10));
 
@@ -725,10 +751,10 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
     EXPECT_EQ(compare, expected);
 
     std::vector<organisation::parallel::value> values = {
-        { organisation::point(17,10,10), organisation::point(1,-1,-1), 2, 0 },
-        { organisation::point(16,10,10), organisation::point(2,-1,-1), 5, 0 },
+        { organisation::point(17,10,10), organisation::point(1,-1,-1), 3, 0 },
+        { organisation::point(16,10,10), organisation::point(2,-1,-1), 6, 0 },
         { organisation::point(15,10,10), organisation::point(3,-1,-1), 9, 0 },
-        { organisation::point(14,10,10), organisation::point(7,-1,-1),11, 0 },        
+        { organisation::point(14,10,10), organisation::point(7,-1,-1),12, 0 },        
     };
     
     std::vector<organisation::parallel::value> data = program.get();
@@ -738,16 +764,17 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
 
 TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationaryOnlyParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
+    const organisation::point starting(width / 2, height / 2, depth / 2);
 
     std::string data1("daisy daisy give me your answer do please do .");
     std::string input1("give me your .");
     
     std::vector<std::vector<std::string>> expected = {
         { 
-            "daisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisy"
+            "daisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisydaisy"
         }
     };
 
@@ -760,7 +787,7 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
     organisation::parameters parameters(width, height, depth);
     
     parameters.dim_clients = organisation::point(1,1,1);
-    parameters.iterations = 20;
+    parameters.iterations = 30;
     parameters.mappings = mappings;
     parameters.output_stationary_only = true;
 
@@ -777,10 +804,12 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 1,2,3 };    
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    insert.values = { a };
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { { 1,0,0 }, { 1,0,0 } };
+    std::vector<organisation::vector> m1 = { { 1,0,0 }, { 1,0,0 } };
+    movement.set(0,m1);
 
     organisation::genetic::cache cache(parameters);
     cache.set(organisation::point(0,-1,-1), organisation::point(18,10,10));
@@ -833,10 +862,10 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
     EXPECT_EQ(compare, expected);
 
     std::vector<organisation::parallel::value> values = {
-        { organisation::point(17,10,10), organisation::point(1,-1,-1), 2, 0 },
-        { organisation::point(16,10,10), organisation::point(2,-1,-1), 5, 0 },
+        { organisation::point(17,10,10), organisation::point(1,-1,-1), 3, 0 },
+        { organisation::point(16,10,10), organisation::point(2,-1,-1), 6, 0 },
         { organisation::point(15,10,10), organisation::point(3,-1,-1), 9, 0 },
-        { organisation::point(14,10,10), organisation::point(7,-1,-1),11, 0 },        
+        { organisation::point(14,10,10), organisation::point(7,-1,-1),12, 0 },        
     };
     
     std::vector<organisation::parallel::value> data = program.get();
@@ -846,7 +875,7 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
 
 TEST(BasicProgramMovementAllDirectionsBoundaryTestParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -893,7 +922,7 @@ TEST(BasicProgramMovementAllDirectionsBoundaryTestParallel, BasicAssertions)
 
 TEST(BasicProgramMovementAllDirectionsPartialBoundaryParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -946,7 +975,7 @@ TEST(BasicProgramMovementAllDirectionsPartialBoundaryParallel, BasicAssertions)
 
 TEST(BasicProgramMovementAllDirectionsBoundaryDeleteSuccessfulAndMovementSequenceMaintainedParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -1000,7 +1029,7 @@ TEST(BasicProgramMovementAllDirectionsBoundaryDeleteSuccessfulAndMovementSequenc
 
 TEST(BasicProgramTestHostBufferExceededLoadParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -1088,7 +1117,7 @@ TEST(BasicProgramTestHostBufferExceededLoadParallel, BasicAssertions)
 
 TEST(BasicProgramTestHostBufferNotEvenLoadParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -1174,11 +1203,12 @@ TEST(BasicProgramTestHostBufferNotEvenLoadParallel, BasicAssertions)
     EXPECT_EQ(data,values);       
 }
 
-TEST(BasicProgramDataSwapParallel, BasicAssertions)
+TEST(BasicProgramDataSwapWithDualMovementPatternParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
+    const organisation::point starting(width / 2, height / 2, depth / 2);
 
     std::string data1("daisy daisy give me your answer do please do .");
     std::string input1("daisy give");
@@ -1197,14 +1227,14 @@ TEST(BasicProgramDataSwapParallel, BasicAssertions)
     organisation::parameters parameters(width, height, depth);
     parameters.mappings = mappings;
     parameters.dim_clients = organisation::point(1,1,1);
-    parameters.iterations = 15;
+    parameters.iterations = 8;
 
     organisation::inputs::epoch epoch1(input1);
     parameters.input.push_back(epoch1);
     parameters.input.push_back(epoch1);
 
     parallel::mapper::configuration mapper;
-    mapper.origin = organisation::point(width / 2, height / 2, depth / 2);
+    mapper.origin = starting;
 
     organisation::parallel::program program(device, &queue, mapper, parameters);
     
@@ -1213,26 +1243,35 @@ TEST(BasicProgramDataSwapParallel, BasicAssertions)
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { 1,8 };    
+    organisation::genetic::inserts::value i1(1, organisation::point(starting.x - 3,starting.y - 3,starting.z), 0);
+    organisation::genetic::inserts::value i2(1, organisation::point(starting.x + 3,starting.y + 3,starting.z), 1);
+    insert.values = { i1, i2 };
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { 
-        { -1,0,0 }, 
-        { -1,0,0 }, 
-        { -1,0,0 }, 
-        { -1,0,0 },
-        { -1,0,0 },
-        { -1,0,0 },
-        {  0,1,0 }, 
-        {  1,0,0 }, 
-        { 0,-1,0 }, 
-        {  1,0,0 }, 
-        {  1,0,0 }, 
-        {  1,0,0 }, 
-        {  1,0,0 }, 
-        {  1,0,0 }, 
-        {  1,0,0 }
+    std::vector<organisation::vector> m1 = { 
+        { 0,1,0 },
+        { 0,1,0 },    
+        { 0,1,0 }, 
+        { 1,0,0 }, 
+        { 1,0,0 }, 
+        { 1,0,0 }, 
+        { 1,0,0 },
+        { 1,0,0 }
     };
+
+    std::vector<organisation::vector> m2 = { 
+        {  0,-1,0 },
+        {  0,-1,0 },    
+        {  0,-1,0 },  
+        { -1, 0,0 }, 
+        { -1, 0,0 }, 
+        { -1, 0,0 }, 
+        { -1, 0,0 },
+        { -1, 0,0 }
+    };
+      
+    movement.set(0,m1);
+    movement.set(1,m2);
 
     organisation::genetic::cache cache(parameters);
 
@@ -1286,8 +1325,8 @@ TEST(BasicProgramDataSwapParallel, BasicAssertions)
     EXPECT_EQ(compare, expected);
 
     std::vector<organisation::parallel::value> values = {
-        { organisation::point( 7,11,10), organisation::point(0,-1,-1), 2, 0 },
-        { organisation::point( 8,11,10), organisation::point(1,-1,-1),11, 0 }
+        { organisation::point( 9,10,10), organisation::point(0,-1,-1), 2, 0 },
+        { organisation::point(11,10,10), organisation::point(1,-1,-1), 2, 0 }
     };
     
     std::vector<organisation::parallel::value> data = program.get();
@@ -1308,7 +1347,7 @@ TEST(BasicProgramDataSwapParallel, BasicAssertions)
 
 TEST(BasicProgramScaleTestParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const organisation::point clients(10,10,10);
     const int width = 20, height = 20, depth = 20;
@@ -1421,7 +1460,7 @@ TEST(BasicProgramScaleTestParallel, BasicAssertions)
 
 TEST(BasicProgramAllDirectionsParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const organisation::point clients(27,1,1);
     const int width = 20, height = 20, depth = 20;
@@ -1537,4 +1576,116 @@ TEST(BasicProgramAllDirectionsParallel, BasicAssertions)
         if(it != NULL) delete it;
    }
 }
-*/
+
+TEST(BasicProgramMultiMovementPatternsParallel, BasicAssertions)
+{    
+    //GTEST_SKIP();
+
+    const int width = 20, height = 20, depth = 20;
+    const organisation::point starting(width / 2, height / 2, depth / 2);
+
+    std::string data1("daisy daisy give me your answer do please do .");
+    std::string input1("daisy give");
+    
+    std::vector<std::string> strings = organisation::split(data1);    
+    organisation::data mappings(strings);
+
+	::parallel::device device(0);
+	::parallel::queue queue(device);
+
+    organisation::parameters parameters(width, height, depth);
+    parameters.mappings = mappings;
+    parameters.dim_clients = organisation::point(2,1,1);
+    parameters.iterations = 8;
+
+    organisation::inputs::epoch epoch1(input1);
+    parameters.input.push_back(epoch1);
+    parameters.input.push_back(epoch1);
+
+    parallel::mapper::configuration mapper;
+    mapper.origin = starting;
+
+    organisation::parallel::program program(device, &queue, mapper, parameters);
+    
+    EXPECT_TRUE(program.initalised());
+
+    organisation::schema s1(parameters), s2(parameters);
+
+    organisation::genetic::inserts::insert insert1(parameters);
+    organisation::genetic::inserts::value i1(1, organisation::point(starting.x - 1,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value i2(1, organisation::point(starting.x + 1,starting.y,starting.z), 1);
+    insert1.values = { i1, i2 };
+
+    organisation::genetic::movements::movement movement1(parameters);
+    std::vector<organisation::vector> m1 = { 
+        { 0,1,0 }
+    };
+
+    std::vector<organisation::vector> m2 = { 
+        {  0,-1,0 }        
+    };
+      
+    movement1.set(0,m1);
+    movement1.set(1,m2);
+
+    // ***
+
+    organisation::genetic::inserts::insert insert2(parameters);
+    organisation::genetic::inserts::value i3(1, organisation::point(starting.x,starting.y - 1,starting.z), 0);
+    organisation::genetic::inserts::value i4(1, organisation::point(starting.x,starting.y + 1,starting.z), 1);
+    insert2.values = { i3, i4 };
+
+    organisation::genetic::movements::movement movement2(parameters);
+    std::vector<organisation::vector> m3 = { 
+        { 1,0,0 }
+    };
+
+    std::vector<organisation::vector> m4 = { 
+        { -1,0,0 }        
+    };
+      
+    movement2.set(0,m3);
+    movement2.set(1,m4);
+
+    organisation::genetic::cache cache(parameters);
+    organisation::genetic::collisions collisions(parameters);
+        
+    s1.prog.set(cache);
+    s1.prog.set(insert1);
+    s1.prog.set(movement1);
+    s1.prog.set(collisions);
+
+    s2.prog.set(cache);
+    s2.prog.set(insert2);
+    s2.prog.set(movement2);
+    s2.prog.set(collisions);
+
+    std::vector<organisation::schema*> source = { &s1, &s2 };
+    
+    program.copy(source.data(), source.size());
+    program.set(mappings, parameters.input);
+
+    program.run(mappings);
+
+    std::vector<organisation::parallel::value> values0 = {
+        { organisation::point( 9,16,10), organisation::point(0,-1,-1), 2, 0 },
+        { organisation::point(11, 4,10), organisation::point(1,-1,-1), 2, 0 }
+    };
+
+    std::vector<organisation::parallel::value> values1 = {
+        { organisation::point(16, 9,10), organisation::point(0,-1,-1), 2, 1 },
+        { organisation::point( 4,11,10), organisation::point(1,-1,-1), 2, 1 }
+    };
+    
+    std::vector<organisation::parallel::value> data = program.get();
+
+    std::unordered_map<int,std::vector<organisation::parallel::value>> clients;
+
+    for(auto &it: data)
+    {
+        clients[it.client].push_back(it);
+    }
+
+    EXPECT_EQ(clients[0], values0);
+    EXPECT_EQ(clients[1], values1);
+}

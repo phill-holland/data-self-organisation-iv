@@ -357,6 +357,16 @@ void organisation::parallel::program::run(organisation::data &mappings)
             corrections();
             outputting(epoch, iterations);
             boundaries();
+
+/*
+std::cout << "positions ";
+outputarb(devicePositions,totalValues);            
+std::cout << "move pattern ";
+outputarb(deviceMovementPatternIdx,totalValues);            
+std::cout << "move idx ";
+outputarb(deviceMovementIdx,totalValues);            
+std::cout << "\r\n";
+*/
         };
 
         move(mappings);            
@@ -523,7 +533,7 @@ void organisation::parallel::program::next()
                     int offset = _max_movements * _max_movement_patterns * client;
                     int movement_pattern_idx = _movementPatternIdx[i];
 
-                    sycl::float4 direction = _movements[a + offset + (movement_pattern_idx * _max_movement_patterns)];
+                    sycl::float4 direction = _movements[a + offset + (movement_pattern_idx * _max_movements)];
                     _nextDirections[i] = direction;            
             
                     _movementIdx[i]++;      
@@ -966,11 +976,15 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
             int pattern = std::get<0>(it);
             vector direction = std::get<1>(it);
 
-            int offset = pattern * settings.max_movement_patterns;
+            //int offset = (pattern * settings.max_movement_patterns) + m_count;
+            int m_count = hostMovementsCounts[(index * settings.max_movement_patterns) + pattern];
+            
             //int m_count = hostMovementsCounts[(index * settings.max_movement_patterns) + pattern];
 
-            if(hostMovementsCounts[(index * settings.max_movement_patterns) + pattern] < settings.max_movements)
+            //if(hostMovementsCounts[(index * settings.max_movement_patterns) + pattern] < settings.max_movements)
+            if(m_count < settings.max_movements)
             {
+                int offset = (pattern * settings.max_movements) + m_count;
                 hostMovements[(index * settings.max_movements * settings.max_movement_patterns) + offset] = { (float)direction.x, (float)direction.y, (float)direction.z, 0.0f };
                 hostMovementsCounts[(index * settings.max_movement_patterns) + pattern] += 1;
             }
@@ -992,7 +1006,7 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
 
             events.push_back(qt.memcpy(&deviceMovements[dest_index * settings.max_movements * settings.max_movement_patterns], hostMovements, sizeof(sycl::float4) * settings.max_movements * settings.max_movement_patterns * index));
             events.push_back(qt.memcpy(&deviceMovementsCounts[dest_index * settings.max_movement_patterns], hostMovementsCounts, sizeof(int) * settings.max_movement_patterns * index));
-
+            
             sycl::event::wait(events);
             
             memset(hostCachePositions, 0, sizeof(sycl::float4) * settings.max_values * settings.host_buffer);
@@ -1023,6 +1037,13 @@ void organisation::parallel::program::copy(::organisation::schema **source, int 
 
     collision->copy(source, source_size);
     inserter->copy(source, source_size);
+
+/*
+    std::cout << "move: ";
+    outputarb(deviceMovements,settings.max_movements * settings.max_movement_patterns * settings.clients());
+    std::cout << "counts: ";
+    outputarb(deviceMovementsCounts,settings.max_movement_patterns * settings.clients());
+*/
 }
 
 void organisation::parallel::program::debug()
