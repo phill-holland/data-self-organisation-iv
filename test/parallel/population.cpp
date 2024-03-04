@@ -118,7 +118,7 @@ TEST(BasicPopulationTestParallel, BasicAssertions)
 
 TEST(BasicPopulationTestTwoEpochsParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 

@@ -41,21 +41,18 @@ namespace organisation
             {
                 static std::mt19937_64 generator;
 
-                //static const int MIN = 1, MAX = 10;
                 int _min_movements, _max_movements;
-                int _max_movement_patterns;
+                int _min_movement_patterns, _max_movement_patterns;
 
             public:
-            // generate all settings.max_movement_patterns
-                //std::vector<organisation::vector> directions;
                 std::vector<std::tuple<int,organisation::vector>> directions;
-                //std::unordered
 
             public:
                 movement(parameters &settings)
                 {
                     _min_movements = settings.min_movements;
                     _max_movements = settings.max_movements;
+                    _min_movement_patterns = settings.min_movement_patterns;
                     _max_movement_patterns = settings.max_movement_patterns;
                 }
 

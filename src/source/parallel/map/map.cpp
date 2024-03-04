@@ -260,7 +260,7 @@ void ScanMap(
         {
             if (MapIsEquals(temp, client, p1, c1))
             {
-                if((!self)||(c1.w() != idx))
+                if((!self)||(c1.w() != idx))                
                 {
                     int output = 0;
 

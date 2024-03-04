@@ -25,6 +25,7 @@ void organisation::genetic::inserts::insert::generate(data &source)
         if(duplicates.find(index) == duplicates.end())
         {
             values.push_back(temp);
+            duplicates[index] = temp.starting;
         }
     }
 }

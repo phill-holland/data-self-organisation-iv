@@ -102,6 +102,9 @@ void organisation::parallel::program::reset(::parallel::device &dev,
     deviceCorrectionCollisionKeys = sycl::malloc_device<sycl::int2>(settings.max_values * settings.clients(), qt);
     if(deviceCorrectionCollisionKeys == NULL) return;
 
+    deviceInsertCollisionKeys = sycl::malloc_device<sycl::int2>(settings.max_values * settings.clients(), qt);
+    if(deviceInsertCollisionKeys == NULL) return;
+
     // ***
     
     hostCachePositions = sycl::malloc_host<sycl::float4>(settings.max_values * settings.host_buffer, qt);
@@ -549,10 +552,18 @@ void organisation::parallel::program::insert(int epoch, int iteration)
         sycl::queue& qt = ::parallel::queue::get_queue(*dev, queue);
         sycl::range num_items{(size_t)count};
 
-        qt.memset(deviceNextCollisionKeys, 0, sizeof(sycl::int2) * count).wait();
+        std::vector<sycl::event> events;
+
+        events.push_back(qt.memset(deviceNextCollisionKeys, 0, sizeof(sycl::int2) * count));
+        events.push_back(qt.memset(deviceInsertCollisionKeys, 0, sizeof(sycl::int2) * count));
+
+        sycl::event::wait(events);
 
         impacter->build(devicePositions, deviceClient, totalValues, queue);
         impacter->search(inserter->deviceNewPositions, inserter->deviceNewClient, deviceNextCollisionKeys, count, false, false, false, NULL, 0, queue);
+
+        impacter->build(inserter->deviceNewPositions, inserter->deviceNewClient, count, queue);
+        impacter->search(inserter->deviceNewPositions, inserter->deviceNewClient, deviceInsertCollisionKeys, count, true, true, false, NULL, 0, queue);
 
         hostTotalValues[0] = totalValues;
         qt.memcpy(deviceTotalValues, hostTotalValues, sizeof(int)).wait();
@@ -570,7 +581,8 @@ void organisation::parallel::program::insert(int epoch, int iteration)
             auto _srcMovementPatternIdx = inserter->deviceNewMovementPatternIdx;
             auto _srcClient = inserter->deviceNewClient;
             
-            auto _keys = deviceNextCollisionKeys;
+            auto _insertKeys = deviceNextCollisionKeys;
+            auto _startingKeys = deviceInsertCollisionKeys;
 
             auto _valuesLength = settings.max_values * settings.clients();
 
@@ -580,7 +592,7 @@ void organisation::parallel::program::insert(int epoch, int iteration)
 
             h.parallel_for(num_items, [=](auto i) 
             {  
-                if(_keys[i].x() == 0)
+                if((_insertKeys[i].x() == 0)&&(_startingKeys[i].x() == 0))
                 {                
                     cl::sycl::atomic_ref<int, cl::sycl::memory_order::relaxed, 
                                 sycl::memory_scope::device, 
@@ -1211,6 +1223,7 @@ void organisation::parallel::program::makeNull()
     deviceNextCollisionKeys = NULL;
     deviceCurrentCollisionKeys = NULL;
     deviceCorrectionCollisionKeys = NULL;
+    deviceInsertCollisionKeys = NULL;
 
     hostCachePositions = NULL;
     hostCacheValues = NULL;
@@ -1291,6 +1304,7 @@ void organisation::parallel::program::cleanup()
         if(hostCacheValues != NULL) sycl::free(hostCacheValues, q);
         if(hostCachePositions != NULL) sycl::free(hostCachePositions, q);
 
+        if(deviceInsertCollisionKeys != NULL) sycl::free(deviceInsertCollisionKeys, q);
         if(deviceCorrectionCollisionKeys != NULL) sycl::free(deviceCorrectionCollisionKeys, q);
         if(deviceCurrentCollisionKeys != NULL) sycl::free(deviceCurrentCollisionKeys, q);        
         if(deviceNextCollisionKeys != NULL) sycl::free(deviceNextCollisionKeys, q);

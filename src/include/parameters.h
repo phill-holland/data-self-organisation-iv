@@ -26,7 +26,7 @@ namespace organisation
         const static int MIN_MOVEMENT_PATTERNS = 1;
         const static int MAX_MOVEMENT_PATTERNS = 3;
 
-        const static int MIN_INSERT_DELAY = 1;
+        const static int MIN_INSERT_DELAY = 0;
         const static int MAX_INSERT_DELAY = 5;
 
         const static int HOST_BUFFER = 20;

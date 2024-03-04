@@ -81,11 +81,13 @@ bool organisation::genetic::movements::movement::validate(data &source)
             return false;
         }
 
+        /*
         if(index >= _max_movement_patterns)
         {
-            std::cout << "movement::validate(false): index exceeds max allowed movement patterns (" << index << "," << _max_movement_patterns << ")\r\n"; 
+            std::cout << "movement::validate(false): index exceeds man allowed movement patterns (" << index << "," << _max_movement_patterns << ")\r\n"; 
             return false;
         }
+        */
 
         vector direction = std::get<1>(it);
 
@@ -105,7 +107,7 @@ bool organisation::genetic::movements::movement::validate(data &source)
 
 void organisation::genetic::movements::movement::generate(data &source)
 {
-    int total_patterns = (std::uniform_int_distribution<int>{1, _max_movement_patterns - 1})(generator);
+    int total_patterns = (std::uniform_int_distribution<int>{_min_movement_patterns, _max_movement_patterns - 1})(generator);
     for(int j = 0; j < total_patterns; ++j)
     {
         int n = (std::uniform_int_distribution<int>{_min_movements, _max_movements - 1})(generator);

@@ -1689,3 +1689,104 @@ TEST(BasicProgramMultiMovementPatternsParallel, BasicAssertions)
     EXPECT_EQ(clients[0], values0);
     EXPECT_EQ(clients[1], values1);
 }
+
+TEST(BasicProgramStartingPointOverlapsInsertParallel, BasicAssertions)
+{    
+    //GTEST_SKIP();
+
+    const int width = 20, height = 20, depth = 20;
+    organisation::point starting(width / 2, height / 2, depth / 2);
+
+    std::string input1("daisy daisy give me your answer do .");
+    
+    std::vector<std::vector<std::string>> expected = {
+        { 
+            "daisydaisydaisydaisydaisydaisydaisydaisy", 
+            "daisydaisydaisydaisydaisydaisydaisydaisy" 
+        }
+    };
+
+    std::vector<std::string> strings = organisation::split(input1);
+    organisation::data mappings(strings);
+	::parallel::device device(0);
+	::parallel::queue queue(device);
+
+    organisation::parameters parameters(width, height, depth);
+    parameters.mappings = mappings;
+    parameters.dim_clients = organisation::point(2,1,1);
+    parameters.iterations = 6;
+
+    organisation::inputs::epoch epoch1(input1);
+    parameters.input.push_back(epoch1);
+
+    parallel::mapper::configuration mapper;
+    mapper.origin = organisation::point(width / 2, height / 2, depth / 2);
+
+    organisation::parallel::program program(device, &queue, mapper, parameters);
+    
+    EXPECT_TRUE(program.initalised());
+    
+    organisation::schema s1(parameters);
+    organisation::schema s2(parameters);
+
+    organisation::genetic::inserts::insert insert0(parameters);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value b(4, organisation::point(starting.x,starting.y,starting.z), 0);
+    
+    insert0.values = { a, b };
+
+    organisation::genetic::inserts::insert insert1(parameters);
+    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value d(2, organisation::point(starting.x + 2,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value e(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    
+    insert1.values = { c, d, e };
+
+    organisation::genetic::movements::movement movement(parameters);
+    std::vector<organisation::vector> m1 = { { 0,1,0 } };
+    movement.set(0, m1);
+    
+    organisation::genetic::cache cache(parameters);
+
+    organisation::genetic::collisions collisions(parameters);
+    
+    s1.prog.set(cache);
+    s1.prog.set(insert0);
+    s1.prog.set(movement);
+    s1.prog.set(collisions);
+
+    s2.prog.set(cache);
+    s2.prog.set(insert1);
+    s2.prog.set(movement);
+    s2.prog.set(collisions);
+    
+    std::vector<organisation::schema*> source = { &s1, &s2 };
+    
+    program.copy(source.data(), source.size());
+    program.set(mappings, parameters.input);
+
+    program.run(mappings);
+
+    std::vector<organisation::parallel::value> values1 = {
+        { organisation::point(10,13,10), organisation::point(0,-1,-1),  3, 0 },
+        { organisation::point(10,11,10), organisation::point(0,-1,-1),  5, 0 }
+    };
+    
+    std::vector<organisation::parallel::value> values2 = {
+        { organisation::point(10,13,10), organisation::point(1,-1,-1),  3, 1 },
+        { organisation::point(10,10,10), organisation::point(4,-1,-1),  6, 1 }
+    };
+
+    std::vector<organisation::parallel::value> data = program.get();
+
+    std::unordered_map<int,std::vector<organisation::parallel::value>> lookup;
+    lookup[0] = { }; lookup[1] = { };
+
+    for(auto &it: data) 
+    { 
+        lookup[it.client].push_back(it);
+    }
+
+    EXPECT_EQ(lookup[0], values1);
+    EXPECT_EQ(lookup[1], values2);
+}

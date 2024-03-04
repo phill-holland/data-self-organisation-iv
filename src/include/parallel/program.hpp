@@ -50,6 +50,7 @@ namespace organisation
             sycl::int2 *deviceNextCollisionKeys;
             sycl::int2 *deviceCurrentCollisionKeys;
             sycl::int2 *deviceCorrectionCollisionKeys;
+            sycl::int2 *deviceInsertCollisionKeys;
             
             sycl::float4 *hostCachePositions;
             sycl::int4 *hostCacheValues; // ***
