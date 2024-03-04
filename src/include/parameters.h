@@ -22,6 +22,8 @@ namespace organisation
         const static int MAX_INPUT_DATA =  15;
         const static int MAX_CACHE = 10;
         const static int MAX_CACHE_DIMENSION = 3;
+
+        const static int MIN_MOVEMENT_PATTERNS = 1;
         const static int MAX_MOVEMENT_PATTERNS = 3;
 
         const static int MIN_INSERT_DELAY = 1;
@@ -45,6 +47,8 @@ namespace organisation
         int max_input_data;
         int max_cache;
         int max_cache_dimension;
+
+        int min_movement_patterns;
         int max_movement_patterns;
 
         int min_insert_delay;
@@ -87,6 +91,8 @@ namespace organisation
             max_input_data = MAX_INPUT_DATA;
             max_cache = MAX_CACHE;
             max_cache_dimension = MAX_CACHE_DIMENSION;
+
+            min_movement_patterns = MIN_MOVEMENT_PATTERNS;
             max_movement_patterns = MAX_MOVEMENT_PATTERNS;
         
             min_insert_delay = MIN_INSERT_DELAY;

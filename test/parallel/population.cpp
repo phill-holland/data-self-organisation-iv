@@ -8,7 +8,7 @@
 #include "kdpoint.h"
 #include "population.h"
 #include <unordered_map>
-/*
+
 organisation::schema getSchema(organisation::parameters &parameters, 
                                organisation::vector direction,
                                organisation::vector rebound,
@@ -16,13 +16,18 @@ organisation::schema getSchema(organisation::parameters &parameters,
                                organisation::point value,
                                int delay)
 {
+    organisation::point starting(parameters.width / 2, parameters.height / 2, parameters.depth / 2);
+
     organisation::schema s1(parameters);
 
     organisation::genetic::inserts::insert insert(parameters);
-    insert.values = { delay };    
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
+
+    insert.values = { a };
 
     organisation::genetic::movements::movement movement(parameters);
-    movement.directions = { direction };
+    std::vector<organisation::vector> m1 = { direction };
+    movement.set(0,m1);
 
     organisation::genetic::cache cache(parameters);    
     cache.set(value, wall);
@@ -113,7 +118,7 @@ TEST(BasicPopulationTestParallel, BasicAssertions)
 
 TEST(BasicPopulationTestTwoEpochsParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -214,4 +219,3 @@ TEST(BasicPopulationTestTwoEpochsParallel, BasicAssertions)
         EXPECT_TRUE(source[i]->equals(result[i]));
     }
 }
-*/

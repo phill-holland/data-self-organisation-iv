@@ -61,7 +61,7 @@ namespace organisation
                 int _width, _height, _depth;                
                 
                 int _min_insert_delay, _max_insert_delay;
-                int _max_movement_patterns;
+                int _min_movement_patterns, _max_movement_patterns;
 
             public:
                 std::vector<value> values;
@@ -75,6 +75,8 @@ namespace organisation
 
                     _min_insert_delay = settings.min_insert_delay;
                     _max_insert_delay = settings.max_insert_delay;
+
+                    _min_movement_patterns = settings.min_movement_patterns;
                     _max_movement_patterns = settings.max_movement_patterns;
                 }
 

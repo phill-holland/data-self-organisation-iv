@@ -70,9 +70,11 @@ bool organisation::genetic::movements::movement::validate(data &source)
     }
 
     int previous = 0;
+
     for(auto &it: directions)
     {
         int index = std::get<0>(it);
+
         if((index != previous)&&(previous + 1 != index))
         {
             std::cout << "movement::validate(false): indices not sequential (" << index << "," << previous << ")\r\n"; 
@@ -94,6 +96,8 @@ bool organisation::genetic::movements::movement::validate(data &source)
             std::cout << "movement::validate(false): direction out of bounds (" << direction.x << "," << direction.y << "," << direction.z << ")\r\n"; 
             return false;
         }
+
+        previous = index;
     }
 
     return true;

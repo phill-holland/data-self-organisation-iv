@@ -302,20 +302,6 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
     }   
 
     qt.memcpy(deviceInsertsDelayClone, deviceInsertsDelay, sizeof(int) * settings.max_inserts * settings.clients()).wait();
-
-/*
-    std::cout << "delays: ";
-    outputarb(deviceInsertsDelay,settings.max_inserts * settings.clients());
-
-    std::cout << "position: ";
-    outputarb(deviceInsertsStartingPosition,settings.max_inserts * settings.clients());
-
-    std::cout << "pattern: ";
-    outputarb(deviceInsertsMovementPatternIdx,settings.max_inserts * settings.clients());
-
-    std::cout << "clone: ";
-    outputarb(deviceInsertsDelayClone,settings.max_inserts * settings.clients());
-*/
 }
 
 void organisation::parallel::inserts::outputarb(int *source, int length)

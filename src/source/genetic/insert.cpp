@@ -9,7 +9,7 @@ void organisation::genetic::inserts::insert::generate(data &source)
 {
     clear();
 
-    int length = (std::uniform_int_distribution<int>{1, _max_movement_patterns})(generator);
+    int length = (std::uniform_int_distribution<int>{_min_movement_patterns, _max_movement_patterns})(generator);
 
     std::unordered_map<int, point> duplicates;
 
