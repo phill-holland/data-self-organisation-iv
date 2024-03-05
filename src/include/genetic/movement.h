@@ -17,26 +17,6 @@ namespace organisation
     {
         namespace movements
         {
-            /*
-            class value
-            {
-            public:
-                std::vector<organisation::vector> directions;
-
-            public:
-                void clear()
-                {
-                    directions.clear();
-                }
-
-            public:
-                bool operator==(const value &src) const
-                {
-                    return directions == src.directions;
-                }
-            };
-            */
-
             class movement : public templates::genetic, public templates::serialiser
             {
                 static std::mt19937_64 generator;

@@ -585,7 +585,7 @@ void organisation::parallel::program::insert(int epoch, int iteration)
             auto _startingKeys = deviceInsertCollisionKeys;
 
             auto _valuesLength = settings.max_values * settings.clients();
-
+    
             auto _iteration = iteration;
 
             auto _totalValues = deviceTotalValues;

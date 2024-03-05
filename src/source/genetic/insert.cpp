@@ -11,7 +11,7 @@ void organisation::genetic::inserts::insert::generate(data &source)
 
     int length = (std::uniform_int_distribution<int>{_min_movement_patterns, _max_movement_patterns})(generator);
 
-    std::unordered_map<int, point> duplicates;
+    //std::unordered_map<int, point> duplicates;
 
     for(int i = 0; i < length; ++i)
     {
@@ -20,13 +20,16 @@ void organisation::genetic::inserts::insert::generate(data &source)
         temp.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
         temp.movementPatternIdx = (std::uniform_int_distribution<int>{0, _max_movement_patterns - 1})(generator);
         temp.starting.generate(_width,_height,_depth);
+        values.push_back(temp);
 
+/*
         int index = ((_width * _height) * temp.starting.z) + ((temp.starting.y * _width) + temp.starting.x);
         if(duplicates.find(index) == duplicates.end())
         {
             values.push_back(temp);
             duplicates[index] = temp.starting;
         }
+        */
     }
 }
 
@@ -54,8 +57,10 @@ bool organisation::genetic::inserts::insert::mutate(data &source)
             val.movementPatternIdx = (std::uniform_int_distribution<int>{0, _max_movement_patterns - 1})(generator);
         }
         else if(mode == 2)
-        {          
-            std::unordered_map<int, point> duplicates;
+        {       
+            val.starting.generate(_width,_height,_depth);         
+            /*   
+            //std::unordered_map<int, point> duplicates;
 
             for(auto &it: values)
             {
@@ -72,6 +77,7 @@ bool organisation::genetic::inserts::insert::mutate(data &source)
             }while((duplicates.find(index) != duplicates.end())&&(duplicates_counter++<COUNTER));
 
             if(duplicates_counter >= COUNTER) return false;
+            */
         }
             
         old = values[offset];        
@@ -149,7 +155,7 @@ bool organisation::genetic::inserts::insert::validate(data &source)
 {
     if(values.empty()) { std::cout << "insert::validate(false): values is empty\r\n"; return false; }
 
-    std::unordered_map<int, point> duplicates;
+    //std::unordered_map<int, point> duplicates;
 
     for(auto &it: values)
     {
@@ -165,6 +171,7 @@ bool organisation::genetic::inserts::insert::validate(data &source)
             return false; 
         }
 
+/*
         int index = ((_width * _height) * it.starting.z) + ((it.starting.y * _width) + it.starting.x);
         if(duplicates.find(index) == duplicates.end())
             duplicates[index] = it.starting;
@@ -173,6 +180,7 @@ bool organisation::genetic::inserts::insert::validate(data &source)
             std::cout << "insert::validate(false): duplicate starting position\r\n"; 
             return false;  
         }
+*/
 
         if((it.movementPatternIdx < 0)||(it.movementPatternIdx >= _max_movement_patterns))
         {
