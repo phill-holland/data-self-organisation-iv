@@ -5,31 +5,46 @@
 
 std::mt19937_64 organisation::genetic::inserts::insert::generator(std::random_device{}());
 
+bool organisation::genetic::inserts::insert::get(std::tuple<int,vector> &result, int idx)
+{
+    int offset = idx;
+    int pattern = 0;
+    for(auto &it:values)
+    {
+        int length = it.movement.size();
+        if(offset >= length) offset -= length;
+        else
+        {
+            vector direction = it.movement.directions[offset];
+            result = std::tuple<int,vector>(pattern, direction);
+            return true;
+        }
+
+        ++pattern;
+    }
+
+    return false;
+}
+
 void organisation::genetic::inserts::insert::generate(data &source)
 {
     clear();
 
     int length = (std::uniform_int_distribution<int>{_min_movement_patterns, _max_movement_patterns})(generator);
 
-    //std::unordered_map<int, point> duplicates;
-
     for(int i = 0; i < length; ++i)
     {
         value temp;
 
         temp.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-        temp.movementPatternIdx = (std::uniform_int_distribution<int>{0, _max_movement_patterns - 1})(generator);
         temp.starting.generate(_width,_height,_depth);
-        values.push_back(temp);
+        
+        movements::movement movement(_min_movements, _max_movements);
+        movement.generate(source);
 
-/*
-        int index = ((_width * _height) * temp.starting.z) + ((temp.starting.y * _width) + temp.starting.x);
-        if(duplicates.find(index) == duplicates.end())
-        {
-            values.push_back(temp);
-            duplicates[index] = temp.starting;
-        }
-        */
+        temp.movement = movement;
+
+        values.push_back(temp);
     }
 }
 
@@ -54,30 +69,11 @@ bool organisation::genetic::inserts::insert::mutate(data &source)
         }
         else if(mode == 1)
         {
-            val.movementPatternIdx = (std::uniform_int_distribution<int>{0, _max_movement_patterns - 1})(generator);
+            val.movement.mutate(source);
         }
         else if(mode == 2)
         {       
-            val.starting.generate(_width,_height,_depth);         
-            /*   
-            //std::unordered_map<int, point> duplicates;
-
-            for(auto &it: values)
-            {
-                int index = ((_width * _height) * it.starting.z) + ((it.starting.y * _width) + it.starting.x);    
-                duplicates[index] = it.starting;
-            }  
-
-            int index = 0;
-            int duplicates_counter = 0;
-            do 
-            {
-                val.starting.generate(_width,_height,_depth);         
-                index = ((_width * _height) * val.starting.z) + ((val.starting.y * _width) + val.starting.x);    
-            }while((duplicates.find(index) != duplicates.end())&&(duplicates_counter++<COUNTER));
-
-            if(duplicates_counter >= COUNTER) return false;
-            */
+            val.starting.generate(_width,_height,_depth);                     
         }
             
         old = values[offset];        
@@ -96,9 +92,37 @@ void organisation::genetic::inserts::insert::append(genetic *source, int src_sta
 
     int length = src_end - src_start;  
 
-    for(int i = 0; i < length; ++i)
+    std::tuple<int,vector> first;
+    if(s->get(first, src_start))
     {
-        values.push_back(s->values[src_start + i]);
+        int previous = std::get<0>(first);
+        const value src = s->values[previous];
+        value dest(src.delay, src.starting, movements::movement(_min_movements,_max_movements));
+
+        for(int i = 0; i < length; ++i)
+        {
+            std::tuple<int,vector> data;
+            
+            if(s->get(data, src_start + i))
+            {
+                int pattern = std::get<0>(data);
+                vector direction = std::get<1>(data);
+
+                if(pattern != previous) 
+                {
+                    values.push_back(dest);
+
+                    const value src = s->values[pattern];
+                    dest = value(src.delay, src.starting, movements::movement(_min_movements,_max_movements));
+
+                    previous = pattern;
+                }
+            
+                dest.movement.directions.push_back(direction);
+            }          
+        }
+
+        if(dest.movement.size() > 0) values.push_back(dest);
     }   
 }
 
@@ -110,7 +134,7 @@ std::string organisation::genetic::inserts::insert::serialise()
     {
         result += "I " + std::to_string(it.delay);
         result += " " + it.starting.serialise();
-        result += " " + std::to_string(it.movementPatternIdx);
+        result += " " + it.movement.serialise();
         result += "\n";
     }
 
@@ -143,7 +167,7 @@ void organisation::genetic::inserts::insert::deserialise(std::string source)
         }
         else if(index == 3)
         {
-            value.movementPatternIdx = std::atoi(str.c_str());
+            value.movement.deserialise(str);
             values.push_back(value);            
         }
 
@@ -155,7 +179,11 @@ bool organisation::genetic::inserts::insert::validate(data &source)
 {
     if(values.empty()) { std::cout << "insert::validate(false): values is empty\r\n"; return false; }
 
-    //std::unordered_map<int, point> duplicates;
+    if(values.size() < _min_movement_patterns)//||(values.size() >= _max_movement_patterns))
+    {
+        std::cout << "insert::validate(false): movement out of bounds\r\n"; 
+        return false; 
+    }
 
     for(auto &it: values)
     {
@@ -171,22 +199,7 @@ bool organisation::genetic::inserts::insert::validate(data &source)
             return false; 
         }
 
-/*
-        int index = ((_width * _height) * it.starting.z) + ((it.starting.y * _width) + it.starting.x);
-        if(duplicates.find(index) == duplicates.end())
-            duplicates[index] = it.starting;
-        else
-        {
-            std::cout << "insert::validate(false): duplicate starting position\r\n"; 
-            return false;  
-        }
-*/
-
-        if((it.movementPatternIdx < 0)||(it.movementPatternIdx >= _max_movement_patterns))
-        {
-            std::cout << "insert::validate(false): movement out of bounds\r\n"; 
-            return false; 
-        }
+        if(!it.movement.validate(source)) return false;
     }
 
     return true;

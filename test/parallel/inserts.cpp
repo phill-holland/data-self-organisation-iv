@@ -45,9 +45,9 @@ TEST(BasicProgramInsertThreeInputsParallel, BasicAssertions)
 
     organisation::point starting(width/2, height/2, depth/2);
 
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value b(2, organisation::point(starting.x + 1,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z));
+    organisation::genetic::inserts::value b(2, organisation::point(starting.x + 1,starting.y,starting.z));
+    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z));
 
     insert.values = { a, b, c };
     s1.prog.set(insert);
@@ -150,9 +150,9 @@ TEST(BasicProgramInsertThreeInputsTwoSchemasParallel, BasicAssertions)
 
     organisation::point starting(width/2, height/2, depth/2);
 
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value b(2, organisation::point(starting.x + 1,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z));
+    organisation::genetic::inserts::value b(2, organisation::point(starting.x + 1,starting.y,starting.z));
+    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z));
 
     insert.values = { a, b, c };
     s1.prog.set(insert);
@@ -278,10 +278,10 @@ TEST(BasicProgramInsertFourInputsTwoWordsParallel, BasicAssertions)
 
     organisation::point starting(width/2, height/2, depth/2);
 
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value b(2, organisation::point(starting.x + 1,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value d(2, organisation::point(starting.x + 3,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z));
+    organisation::genetic::inserts::value b(2, organisation::point(starting.x + 1,starting.y,starting.z));
+    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z));
+    organisation::genetic::inserts::value d(2, organisation::point(starting.x + 3,starting.y,starting.z));
 
     insert.values = { a, b, c, d };
     s1.prog.set(insert);
@@ -364,7 +364,7 @@ TEST(BasicProgramInsertSingleInputParallel, BasicAssertions)
 
     organisation::point starting(width/2, height/2, depth/2);
 
-    organisation::genetic::inserts::value a(1, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value a(1, organisation::point(starting.x,starting.y,starting.z));
 
     insert.values = { a };
     s1.prog.set(insert);
@@ -425,4 +425,3 @@ TEST(BasicProgramInsertSingleInputParallel, BasicAssertions)
         }        
     }    
 }
-

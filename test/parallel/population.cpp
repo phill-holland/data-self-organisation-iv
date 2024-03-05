@@ -20,15 +20,14 @@ organisation::schema getSchema(organisation::parameters &parameters,
 
     organisation::schema s1(parameters);
 
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { direction };
+
     organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), movement);
 
     insert.values = { a };
-
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { direction };
-    movement.set(0,m1);
-
+    
     organisation::genetic::cache cache(parameters);    
     cache.set(value, wall);
 
@@ -43,7 +42,6 @@ organisation::schema getSchema(organisation::parameters &parameters,
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     return s1;

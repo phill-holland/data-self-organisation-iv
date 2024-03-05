@@ -31,7 +31,7 @@ void organisation::program::reset(parameters &settings)
 void organisation::program::clear()
 {    
     caches.clear();
-    movement.clear();
+    //movement.clear();
     collisions.clear();
     insert.clear();
 }
@@ -40,7 +40,7 @@ bool organisation::program::empty()
 {
     templates::genetic *genes[] = 
     { 
-        &movement,
+        //&movement,
         &collisions,
         &insert
     }; 
@@ -65,7 +65,7 @@ void organisation::program::generate(data &source)
     templates::genetic *genes[] = 
     { 
         &caches,
-        &movement,
+        //&movement,
         &collisions,
         &insert
     }; 
@@ -82,7 +82,7 @@ bool organisation::program::mutate(data &source)
     templates::genetic *genes[] = 
     { 
         &caches,
-        &movement,
+       // &movement,
         &collisions,
         &insert
     }; 
@@ -361,7 +361,7 @@ bool organisation::program::validate(data &source)
     templates::genetic *genes[] = 
     { 
         &caches,
-        &movement,
+        //&movement,
         &collisions,
         &insert
     }; 
@@ -382,7 +382,7 @@ void organisation::program::copy(const program &source)
     length = source.length;
 
     caches.copy(source.caches);
-    movement.copy(source.movement);
+    //movement.copy(source.movement);
     collisions.copy(source.collisions);
     insert.copy(source.insert);    
 }
@@ -390,7 +390,7 @@ void organisation::program::copy(const program &source)
 bool organisation::program::equals(const program &source)
 {
     if(!caches.equals(source.caches)) return false;
-    if(!movement.equals(source.movement)) return false;
+    //if(!movement.equals(source.movement)) return false;
     if(!collisions.equals(source.collisions)) return false;
     if(!insert.equals(source.insert)) return false;
     
@@ -404,7 +404,7 @@ void organisation::program::cross(program &a, program &b)
     templates::genetic *ag[] = 
     { 
         &a.caches,
-        &a.movement,
+        //&a.movement,
         &a.collisions,
         &a.insert
     }; 
@@ -412,7 +412,7 @@ void organisation::program::cross(program &a, program &b)
     templates::genetic *bg[] = 
     { 
         &b.caches,
-        &b.movement,
+        //&b.movement,
         &b.collisions,
         &b.insert
     }; 
@@ -420,7 +420,7 @@ void organisation::program::cross(program &a, program &b)
     templates::genetic *dest[] = 
     { 
         &caches,
-        &movement,
+        //&movement,
         &collisions,
         &insert
     }; 
@@ -481,7 +481,7 @@ std::string organisation::program::serialise()
     std::vector<templates::serialiser*> sources = 
     { 
         &caches,
-        &movement,
+        //&movement,
         &collisions,
         &insert
     }; 
@@ -503,7 +503,7 @@ void organisation::program::deserialise(std::string source)
 
     caches.clear();
     collisions.clear();
-    movement.clear();
+    //movement.clear();
     insert.clear();
 
     while(std::getline(ss,value))
@@ -514,7 +514,7 @@ void organisation::program::deserialise(std::string source)
         if(stream >> type)
         {
             if(type == "D") caches.deserialise(value);
-            else if(type == "M") movement.deserialise(value);
+            //else if(type == "M") movement.deserialise(value);
             else if(type == "C") collisions.deserialise(value);
             else if(type == "I") insert.deserialise(value);
         }
@@ -541,7 +541,7 @@ void organisation::program::load(std::string filename)
     {
         caches.clear();
         collisions.clear();
-        movement.clear();
+        //movement.clear();
         insert.clear();
 
         for(std::string value; getline(source, value); )
@@ -552,7 +552,7 @@ void organisation::program::load(std::string filename)
             if(stream >> type)
             {
                 if(type == "D") caches.deserialise(value);
-                else if(type == "M") movement.deserialise(value);
+                //else if(type == "M") movement.deserialise(value);
                 else if(type == "C") collisions.deserialise(value);
                 else if(type == "I") insert.deserialise(value);
             }

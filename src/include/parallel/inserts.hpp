@@ -32,6 +32,9 @@ namespace organisation
             sycl::float4 *deviceInsertsStartingPosition;
             int *deviceInsertsMovementPatternIdx;
 
+            sycl::float4 *deviceMovements;
+            int *deviceMovementsCounts;
+
             int *deviceInputIdx;
 
             int *deviceTotalNewInserts;
@@ -42,6 +45,9 @@ namespace organisation
             int *hostInsertsDelay;
             sycl::float4 *hostInsertsStartingPosition;
             int *hostInsertsMovementPatternIdx;
+
+            sycl::float4 *hostMovements;
+            int *hostMovementsCounts;
 
             parameters settings;
 
@@ -64,7 +70,9 @@ namespace organisation
                        ::parallel::queue *q,
                        parameters &settings);
 
+            void restart();
             void clear();
+            
             int insert(int epoch);
 
             void set(organisation::data &mappings, inputs::input &source);

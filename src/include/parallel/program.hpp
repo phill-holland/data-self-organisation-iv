@@ -42,8 +42,8 @@ namespace organisation
             sycl::int4 *deviceCacheValues; // ***
             sycl::int4 *deviceCacheClients;
 
-            sycl::float4 *deviceMovements;
-            int *deviceMovementsCounts;
+            //sycl::float4 *deviceMovements;
+            //int *deviceMovementsCounts;
             int *deviceCollisionCounts;
             int *hostCollisionCounts;
             
@@ -56,8 +56,8 @@ namespace organisation
             sycl::int4 *hostCacheValues; // ***
             sycl::int4 *hostCacheClients;
 
-            sycl::float4 *hostMovements;
-            int *hostMovementsCounts;
+            //sycl::float4 *hostMovements;
+            //int *hostMovementsCounts;
                         
             // ***
 

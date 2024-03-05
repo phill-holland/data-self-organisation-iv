@@ -3,7 +3,7 @@
 #include "point.h"
 #include "vector.h"
 #include "data.h"
-#include "parameters.h"
+//#include "parameters.h"
 #include <vector>
 #include <tuple>
 #include <random>
@@ -22,18 +22,15 @@ namespace organisation
                 static std::mt19937_64 generator;
 
                 int _min_movements, _max_movements;
-                int _min_movement_patterns, _max_movement_patterns;
 
             public:
-                std::vector<std::tuple<int,organisation::vector>> directions;
+                std::vector<organisation::vector> directions;                
 
             public:
-                movement(parameters &settings)
+                movement(int min_movements = 0, int max_movements = 0)
                 {
-                    _min_movements = settings.min_movements;
-                    _max_movements = settings.max_movements;
-                    _min_movement_patterns = settings.min_movement_patterns;
-                    _max_movement_patterns = settings.max_movement_patterns;
+                    _min_movements = min_movements; 
+                    _max_movements = max_movements;                    
                 }
 
             public:
@@ -55,8 +52,6 @@ namespace organisation
                     return 0;
                 }
 
-                void set(int pattern, std::vector<organisation::vector> &source);
-
                 std::string serialise();
                 void deserialise(std::string source);
 
@@ -69,7 +64,30 @@ namespace organisation
 
             public:
                 void copy(const movement &source);
-                bool equals(const movement &source);
+                bool equals(const movement &source) const
+                {
+                    if(directions.size() != source.directions.size()) 
+                        return false;
+
+                    for(int i = 0; i < directions.size(); ++i)
+                    {
+                        if(directions[i] != source.directions[i]) 
+                            return false;
+                    }
+
+                    return true;
+                }
+
+            public:
+                bool operator==(const movement &src) const
+                {
+                    return equals(src);                    
+                }
+
+                bool operator!=(const movement &src) const
+                {
+                    return !equals(src);
+                }
             };
         };
     };

@@ -12,6 +12,7 @@
 #include "genetic/collisions.h"
 #include "genetic/insert.h"
 
+/*
 TEST(BasicSerialisationDeserialisation, BasicAssertions)
 {
     GTEST_SKIP();
@@ -66,3 +67,4 @@ TEST(BasicSerialisationDeserialisation, BasicAssertions)
 
     EXPECT_TRUE(p1.equals(p2));
 }
+*/

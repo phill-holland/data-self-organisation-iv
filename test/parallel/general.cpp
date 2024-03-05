@@ -15,13 +15,12 @@ organisation::schema getSchema1(organisation::parameters &parameters, organisati
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-    insert.values = { a };    
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { { 1,0,0 }, { 1,0,0 } };
 
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { { 1,0,0 }, { 1,0,0 } };
-    movement.set(0,m1);
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
+    insert.values = { a };    
 
     organisation::genetic::cache cache(parameters);
     cache.set(value, organisation::point(18,10,10));
@@ -40,7 +39,6 @@ organisation::schema getSchema1(organisation::parameters &parameters, organisati
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     return s1;
@@ -52,13 +50,12 @@ organisation::schema getSchema2(organisation::parameters &parameters, organisati
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-    insert.values = { a };   
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { { 0,1,0 }, { 0,1,0 } };
 
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { { 0,1,0 }, { 0,1,0 } };
-    movement.set(0,m1);
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
+    insert.values = { a };   
     
     organisation::genetic::cache cache(parameters);
     cache.set(value, organisation::point(10,18,10));
@@ -77,7 +74,6 @@ organisation::schema getSchema2(organisation::parameters &parameters, organisati
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     return s1;
@@ -91,20 +87,18 @@ organisation::schema getSchema3(organisation::parameters &parameters,
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
-    insert.values = { a };   
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = direction;
 
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = direction;
-    movement.set(0,m1);
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), movement);
+    insert.values = { a };   
 
     organisation::genetic::cache cache(parameters);    
     organisation::genetic::collisions collisions(parameters);
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     return s1;
@@ -121,13 +115,12 @@ organisation::schema getSchema4(organisation::parameters &parameters,
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
-    insert.values = { a };   
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { direction };
 
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { direction };
-    movement.set(0,m1);
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), movement);
+    insert.values = { a };   
 
     organisation::genetic::cache cache(parameters);    
     cache.set(organisation::point(value,-1,-1), wall);
@@ -143,7 +136,6 @@ organisation::schema getSchema4(organisation::parameters &parameters,
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     return s1;
@@ -160,15 +152,14 @@ organisation::schema getSchema5(organisation::parameters &parameters,
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), 0);
-    insert.values = { a };   
-
-    organisation::genetic::movements::movement movement(parameters);
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
     organisation::vector _direction;
     _direction.decode(direction);
-    std::vector<organisation::vector> m1 = { _direction };
-    movement.set(0,m1);
+    movement.directions = { _direction };
+
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value a(delay, organisation::point(starting.x,starting.y,starting.z), movement);
+    insert.values = { a };   
     
     organisation::point wall(parameters.width/2,parameters.height/2,parameters.depth/2);
     for(int i = 0; i < iteration; ++i)
@@ -193,7 +184,6 @@ organisation::schema getSchema5(organisation::parameters &parameters,
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     return s1;
@@ -264,7 +254,7 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
     parallel::mapper::configuration mapper;
     mapper.origin = organisation::point(width / 2, height / 2, depth / 2);
 
-    for(auto &it: directions)
+    for(auto &it: directions)    
     {        
         organisation::parallel::program program(device, &queue, mapper, parameters);
         
@@ -272,14 +262,13 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
         
         organisation::schema s1(parameters);
 
+        organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+        movement.directions = { std::get<1>(it) };
+
         organisation::genetic::inserts::insert insert(parameters);
-        organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+        organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
         insert.values = { a };
-
-        organisation::genetic::movements::movement movement(parameters);
-        std::vector<organisation::vector> m1 = { std::get<1>(it) };
-        movement.set(0, m1);
-
+        
         organisation::genetic::cache cache(parameters);
         cache.set(organisation::point(0,-1,-1), std::get<0>(it));
 
@@ -297,8 +286,8 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
 
         s1.prog.set(cache);
         s1.prog.set(insert);
-        s1.prog.set(movement);
         s1.prog.set(collisions);
+
         // ***
 
         std::vector<organisation::schema*> source = { &s1 };
@@ -392,16 +381,15 @@ TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions
     organisation::schema s1(parameters);
     organisation::schema s2(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-
-    insert.values = { a };
-
     organisation::vector up(0,1,0);
 
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { up };
-    movement.set(0, m1);
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { up };
+    
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
+
+    insert.values = { a };
     
     organisation::genetic::cache cache(parameters);
     cache.set(organisation::point(0, -1, -1), organisation::point(starting.x,starting.y + 8,starting.z));
@@ -423,12 +411,10 @@ TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions1);
 
     s2.prog.set(cache);
     s2.prog.set(insert);
-    s2.prog.set(movement);
     s2.prog.set(collisions2);
     // ***
 
@@ -692,13 +678,12 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-    insert.values = { a };
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { { 1,0,0 }, { 1,0,0 } };
 
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { { 1,0,0 }, { 1,0,0 } };
-    movement.set(0,m1);
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
+    insert.values = { a };    
     
     organisation::genetic::cache cache(parameters);
     cache.set(organisation::point(0,-1,-1), organisation::point(18,10,10));
@@ -717,7 +702,6 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     std::vector<organisation::schema*> source = { &s1 };
@@ -803,14 +787,13 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
 
     organisation::schema s1(parameters);
 
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { { 1,0,0 }, { 1,0,0 } };
+
     organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
     insert.values = { a };
-
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { { 1,0,0 }, { 1,0,0 } };
-    movement.set(0,m1);
-
+    
     organisation::genetic::cache cache(parameters);
     cache.set(organisation::point(0,-1,-1), organisation::point(18,10,10));
 
@@ -828,7 +811,6 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     std::vector<organisation::schema*> source = { &s1 };
@@ -1242,13 +1224,8 @@ TEST(BasicProgramDataSwapWithDualMovementPatternParallel, BasicAssertions)
 
     organisation::schema s1(parameters);
 
-    organisation::genetic::inserts::insert insert(parameters);
-    organisation::genetic::inserts::value i1(1, organisation::point(starting.x - 3,starting.y - 3,starting.z), 0);
-    organisation::genetic::inserts::value i2(1, organisation::point(starting.x + 3,starting.y + 3,starting.z), 1);
-    insert.values = { i1, i2 };
-
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { 
+organisation::genetic::movements::movement movement1(parameters.min_movements, parameters.max_movements);
+    movement1.directions = { 
         { 0,1,0 },
         { 0,1,0 },    
         { 0,1,0 }, 
@@ -1259,7 +1236,8 @@ TEST(BasicProgramDataSwapWithDualMovementPatternParallel, BasicAssertions)
         { 1,0,0 }
     };
 
-    std::vector<organisation::vector> m2 = { 
+    organisation::genetic::movements::movement movement2(parameters.min_movements, parameters.max_movements);
+    movement2.directions = { 
         {  0,-1,0 },
         {  0,-1,0 },    
         {  0,-1,0 },  
@@ -1270,9 +1248,11 @@ TEST(BasicProgramDataSwapWithDualMovementPatternParallel, BasicAssertions)
         { -1, 0,0 }
     };
       
-    movement.set(0,m1);
-    movement.set(1,m2);
-
+    organisation::genetic::inserts::insert insert(parameters);
+    organisation::genetic::inserts::value i1(1, organisation::point(starting.x - 3,starting.y - 3,starting.z), movement1);
+    organisation::genetic::inserts::value i2(1, organisation::point(starting.x + 3,starting.y + 3,starting.z), movement2);
+    insert.values = { i1, i2 };
+        
     organisation::genetic::cache cache(parameters);
 
     organisation::genetic::collisions collisions(parameters);
@@ -1291,7 +1271,6 @@ TEST(BasicProgramDataSwapWithDualMovementPatternParallel, BasicAssertions)
 
     s1.prog.set(cache);
     s1.prog.set(insert);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     std::vector<organisation::schema*> source = { &s1 };
@@ -1611,53 +1590,47 @@ TEST(BasicProgramMultiMovementPatternsParallel, BasicAssertions)
 
     organisation::schema s1(parameters), s2(parameters);
 
-    organisation::genetic::inserts::insert insert1(parameters);
-    organisation::genetic::inserts::value i1(1, organisation::point(starting.x - 1,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value i2(1, organisation::point(starting.x + 1,starting.y,starting.z), 1);
-    insert1.values = { i1, i2 };
-
-    organisation::genetic::movements::movement movement1(parameters);
-    std::vector<organisation::vector> m1 = { 
+    organisation::genetic::movements::movement movement1(parameters.min_movements, parameters.max_movements);
+    movement1.directions = { 
         { 0,1,0 }
     };
 
-    std::vector<organisation::vector> m2 = { 
+    organisation::genetic::movements::movement movement2(parameters.min_movements, parameters.max_movements);
+    movement2.directions = { 
         {  0,-1,0 }        
     };
-      
-    movement1.set(0,m1);
-    movement1.set(1,m2);
 
+    organisation::genetic::inserts::insert insert1(parameters);
+    organisation::genetic::inserts::value i1(1, organisation::point(starting.x - 1,starting.y,starting.z), movement1);
+    organisation::genetic::inserts::value i2(1, organisation::point(starting.x + 1,starting.y,starting.z), movement2);
+    insert1.values = { i1, i2 };
+          
     // ***
 
-    organisation::genetic::inserts::insert insert2(parameters);
-    organisation::genetic::inserts::value i3(1, organisation::point(starting.x,starting.y - 1,starting.z), 0);
-    organisation::genetic::inserts::value i4(1, organisation::point(starting.x,starting.y + 1,starting.z), 1);
-    insert2.values = { i3, i4 };
-
-    organisation::genetic::movements::movement movement2(parameters);
-    std::vector<organisation::vector> m3 = { 
+    organisation::genetic::movements::movement movement3(parameters.min_movements, parameters.max_movements);
+    movement3.directions = { 
         { 1,0,0 }
     };
 
-    std::vector<organisation::vector> m4 = { 
+    organisation::genetic::movements::movement movement4(parameters.min_movements, parameters.max_movements);
+    movement4.directions = { 
         { -1,0,0 }        
     };
-      
-    movement2.set(0,m3);
-    movement2.set(1,m4);
 
+    organisation::genetic::inserts::insert insert2(parameters);
+    organisation::genetic::inserts::value i3(1, organisation::point(starting.x,starting.y - 1,starting.z), movement3);
+    organisation::genetic::inserts::value i4(1, organisation::point(starting.x,starting.y + 1,starting.z), movement4);
+    insert2.values = { i3, i4 };
+      
     organisation::genetic::cache cache(parameters);
     organisation::genetic::collisions collisions(parameters);
         
     s1.prog.set(cache);
     s1.prog.set(insert1);
-    s1.prog.set(movement1);
     s1.prog.set(collisions);
 
     s2.prog.set(cache);
     s2.prog.set(insert2);
-    s2.prog.set(movement2);
     s2.prog.set(collisions);
 
     std::vector<organisation::schema*> source = { &s1, &s2 };
@@ -1729,35 +1702,32 @@ TEST(BasicProgramStartingPointOverlapsInsertParallel, BasicAssertions)
     organisation::schema s1(parameters);
     organisation::schema s2(parameters);
 
+    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
+    movement.directions = { { 0,1,0 } };
+
     organisation::genetic::inserts::insert insert0(parameters);
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value b(4, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
+    organisation::genetic::inserts::value b(4, organisation::point(starting.x,starting.y,starting.z), movement);
     
     insert0.values = { a, b };
 
     organisation::genetic::inserts::insert insert1(parameters);
-    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value d(2, organisation::point(starting.x + 2,starting.y,starting.z), 0);
-    organisation::genetic::inserts::value e(2, organisation::point(starting.x,starting.y,starting.z), 0);
+    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), movement);
+    organisation::genetic::inserts::value d(2, organisation::point(starting.x + 2,starting.y,starting.z), movement);
+    organisation::genetic::inserts::value e(2, organisation::point(starting.x,starting.y,starting.z), movement);
     
     insert1.values = { c, d, e };
-
-    organisation::genetic::movements::movement movement(parameters);
-    std::vector<organisation::vector> m1 = { { 0,1,0 } };
-    movement.set(0, m1);
-    
+        
     organisation::genetic::cache cache(parameters);
 
     organisation::genetic::collisions collisions(parameters);
     
     s1.prog.set(cache);
     s1.prog.set(insert0);
-    s1.prog.set(movement);
     s1.prog.set(collisions);
 
     s2.prog.set(cache);
     s2.prog.set(insert1);
-    s2.prog.set(movement);
     s2.prog.set(collisions);
     
     std::vector<organisation::schema*> source = { &s1, &s2 };
