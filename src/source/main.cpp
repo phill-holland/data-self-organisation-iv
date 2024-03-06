@@ -34,6 +34,10 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.max_values = 100;
     parameters.max_cache = parameters.max_values;
     parameters.max_cache_dimension = 3;
+    
+    //parameters.max_movements = 5;
+    parameters.max_movement_patterns = 8;
+    parameters.max_insert_delay = 3;
 
     parameters.population = parameters.clients() * 4;
 
@@ -45,19 +49,28 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.mappings = mappings;        
 
     // ***    
-    parameters.scores.max_collisions = 5;
+    parameters.scores.max_collisions = 2;//5;
+
     // ***
 
     //std::string input1("daisy daisy give me your answer do");
     //std::string expected1("I'm half crazy for the love of you");
             
-    std::string input1("daisy daisy give me your");
-    std::string expected1("I'm half crazy for the");
+    //std::string input1("daisy daisy give me your answer do");
+    //std::string expected1("I'm half crazy for the");// crazy for the");
     //std::string expected1("I'm half crazy for the love of");
-        
+
+    std::string input1("daisy give");
+    std::string expected1("crazy");
+
+    std::string input2("daisy answer");
+    std::string expected2("do");
+
     organisation::inputs::epoch epoch1(input1, expected1);
+    organisation::inputs::epoch epoch2(input2, expected2);
     
     parameters.input.push_back(epoch1);
+    parameters.input.push_back(epoch2);
     
     std::cout << "input: \"" << input1 << "\" expected: \"" << expected1 << "\"\r\n";
 

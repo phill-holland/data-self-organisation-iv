@@ -13,7 +13,7 @@
 
 TEST(BasicProgramInsertThreeInputsParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 10, height = 10, depth = 10;
 
@@ -94,7 +94,7 @@ TEST(BasicProgramInsertThreeInputsParallel, BasicAssertions)
     
     for(int epoch = 0; epoch < epochs.size(); ++epoch)
     {
-        inserts.clear();
+        inserts.restart();
 
         std::unordered_map<int,std::vector<organisation::parallel::value>> *current = epochs[epoch];
         for(int i = 0; i < 15; ++i)
@@ -118,7 +118,7 @@ TEST(BasicProgramInsertThreeInputsParallel, BasicAssertions)
 
 TEST(BasicProgramInsertThreeInputsTwoSchemasParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 10, height = 10, depth = 10;
 
@@ -213,7 +213,7 @@ TEST(BasicProgramInsertThreeInputsTwoSchemasParallel, BasicAssertions)
     
     for(int epoch = 0; epoch < epochs.size(); ++epoch)
     {
-        inserts.clear();
+        inserts.restart();
 
         std::unordered_map<int,std::vector<organisation::parallel::value>> *current = epochs[epoch];
         for(int i = 0; i < 15; ++i)
@@ -246,7 +246,7 @@ TEST(BasicProgramInsertThreeInputsTwoSchemasParallel, BasicAssertions)
 
 TEST(BasicProgramInsertFourInputsTwoWordsParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 10, height = 10, depth = 10;
 
@@ -308,7 +308,7 @@ TEST(BasicProgramInsertFourInputsTwoWordsParallel, BasicAssertions)
     
     for(int epoch = 0; epoch < epochs.size(); ++epoch)
     {
-        inserts.clear();
+        inserts.restart();
 
         std::unordered_map<int,std::vector<organisation::parallel::value>> *current = epochs[epoch];
         for(int i = 0; i < 15; ++i)
@@ -332,7 +332,7 @@ TEST(BasicProgramInsertFourInputsTwoWordsParallel, BasicAssertions)
 
 TEST(BasicProgramInsertSingleInputParallel, BasicAssertions)
 {    
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 10, height = 10, depth = 10;
 
@@ -404,7 +404,7 @@ TEST(BasicProgramInsertSingleInputParallel, BasicAssertions)
     
     for(int epoch = 0; epoch < epochs.size(); ++epoch)
     {
-        inserts.clear();
+        inserts.restart();
 
         std::unordered_map<int,std::vector<organisation::parallel::value>> *current = epochs[epoch];
         for(int i = 0; i < 15; ++i)

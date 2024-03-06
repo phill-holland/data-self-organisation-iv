@@ -305,6 +305,8 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
                 //int pattern = std::get<0>(it);
                 //vector direction = jt;//std::get<1>(it);
 
+//settings.max_movement_patterns * settings.clients()
+
                 int m_count = hostMovementsCounts[(index * settings.max_movement_patterns) + pattern];
                 
                 if(m_count < settings.max_movements)
@@ -316,7 +318,8 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
             }
 
             ++pattern;
-            if(pattern >= settings.max_inserts) break;
+            //if(pattern >= settings.max_inserts) break;
+            if(pattern >= settings.max_movement_patterns) break;
         }
         
         ++index;
