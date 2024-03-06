@@ -63,8 +63,10 @@ bool organisation::genetic::inserts::insert::mutate(data &source)
         offset = (std::uniform_int_distribution<int>{0, (int)(values.size() - 1)})(generator);        
         int mode = (std::uniform_int_distribution<int>{0, 2})(generator);
 
+        val = values[offset];
+
         if(mode == 0)
-        {
+        {            
             val.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
         }
         else if(mode == 1)
@@ -72,7 +74,7 @@ bool organisation::genetic::inserts::insert::mutate(data &source)
             val.movement.mutate(source);
         }
         else if(mode == 2)
-        {       
+        {      
             val.starting.generate(_width,_height,_depth);                     
         }
             

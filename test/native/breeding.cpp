@@ -14,7 +14,7 @@
 
 TEST(BasicProgramGenerate, BasicAssertions)
 {
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -40,7 +40,7 @@ TEST(BasicProgramGenerate, BasicAssertions)
 
 TEST(BasicProgramMutate, BasicAssertions)
 {
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -60,9 +60,9 @@ TEST(BasicProgramMutate, BasicAssertions)
         organisation::program p2(parameters);
 
         p1.generate(mappings);        
-
+        
         p2.copy(p1);
-
+        
         EXPECT_TRUE(p1.equals(p2));
 
         if(p1.mutate(mappings))
@@ -75,7 +75,7 @@ TEST(BasicProgramMutate, BasicAssertions)
 
 TEST(BasicProgramCross, BasicAssertions)
 {
-    GTEST_SKIP();
+    //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -89,7 +89,7 @@ TEST(BasicProgramCross, BasicAssertions)
     parameters.mappings = mappings;
 
     for(int i = 0; i < 100000; ++i)
-    {
+    {      
         organisation::program p1(parameters);
         organisation::program p2(parameters);
         organisation::program p3(parameters);
