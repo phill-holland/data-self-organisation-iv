@@ -114,6 +114,7 @@ bool organisation::genetic::cache::validate(data &source)
 
 void organisation::genetic::cache::generate(data &source)
 {
+    /*
     clear();
                 
     std::vector<int> raw = source.all();
@@ -139,8 +140,8 @@ void organisation::genetic::cache::generate(data &source)
         values.push_back(std::tuple<point,point>(value,position));
         if(values.size() >= _max_values) return;
     }
-
-    /*
+*/
+    
     clear();
                 
     std::vector<int> raw = source.all();
@@ -161,8 +162,7 @@ void organisation::genetic::cache::generate(data &source)
             values.push_back(std::tuple<point,point>(value,position));
             if(values.size() >= _max_values) return;
         }
-    }
-    */
+    }    
 }
 
 bool organisation::genetic::cache::mutate(data &source)

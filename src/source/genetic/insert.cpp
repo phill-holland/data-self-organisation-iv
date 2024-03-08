@@ -29,7 +29,7 @@ bool organisation::genetic::inserts::insert::get(std::tuple<int,vector> &result,
 void organisation::genetic::inserts::insert::generate(data &source)
 {
     clear();
-
+/*
 int _w = _width/2;
 int _h = 2;//_height/2;
 int _d = _depth/2;
@@ -73,6 +73,7 @@ movements::movement movement5(_min_movements, _max_movements);
 movement5.generate(source);
 temp5.movement = movement5;
 values.push_back(temp5);
+*/
 /*
 value temp6;
 temp6.starting = organisation::point((_width/2)+3,_height/2,_depth/2);
@@ -117,7 +118,7 @@ temp4.movement = movement4;
 values.push_back(temp4);
 */
 
-/*
+
 
     int length = (std::uniform_int_distribution<int>{_min_movement_patterns, _max_movement_patterns})(generator);
 
@@ -134,8 +135,7 @@ values.push_back(temp4);
         temp.movement = movement;
 
         values.push_back(temp);
-    }
-    */
+    }    
 }
 
 bool organisation::genetic::inserts::insert::mutate(data &source)

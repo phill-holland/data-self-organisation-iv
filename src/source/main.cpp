@@ -41,8 +41,9 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.max_cache_dimension = 3;
     
     //parameters.max_movements = 5;
-    parameters.max_movement_patterns = 8;
-    parameters.max_insert_delay = 3;
+    parameters.min_movement_patterns = 4;
+    parameters.max_movement_patterns = 5;
+    parameters.max_insert_delay = 5;//3;
 
     parameters.population = parameters.clients() * 4;
 
@@ -54,7 +55,7 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.mappings = mappings;        
 
     // ***    
-    parameters.scores.max_collisions = 3;//2;//5;
+    parameters.scores.max_collisions = 0;//3;//2;//5;
 
     // ***
 
@@ -65,8 +66,8 @@ organisation::parameters get_parameters(organisation::data &mappings)
     //std::string expected1("I'm half crazy for the");// crazy for the");
     //std::string expected1("I'm half crazy for the love of");
 
-    std::string input1("daisy give answer");
-    std::string expected1("crazy me");
+    std::string input1("daisy daisy give me answer");
+    std::string expected1("I'm half crazy");
 
     std::string input2("daisy answer love");
     std::string expected2("do your");
@@ -75,11 +76,11 @@ organisation::parameters get_parameters(organisation::data &mappings)
     //std::string expected3("love half");
 
     organisation::inputs::epoch epoch1(input1, expected1);
-    organisation::inputs::epoch epoch2(input2, expected2);
+    //organisation::inputs::epoch epoch2(input2, expected2);
     //organisation::inputs::epoch epoch3(input3, expected3);
     
     parameters.input.push_back(epoch1);
-    parameters.input.push_back(epoch2);
+    //parameters.input.push_back(epoch2);
     //parameters.input.push_back(epoch3);
     
     for(int i = 0; i < parameters.input.size(); ++i)
