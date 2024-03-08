@@ -93,12 +93,17 @@ void organisation::schema::compute(std::vector<organisation::compute> values, sc
 {
     int i = 0;
     bool penalty = false;
+    
+    std::string first = "";
+    if(values.size() > 0) first = values[0].value;
+
     for(std::vector<organisation::compute>::iterator it = values.begin(); it != values.end(); ++it)
     {
         scores[i].compute(*it, settings);
         ++i;
 
         if(it->value.size() <= 0) penalty = true;
+        else if((i > 1)&&(it->value == first)) penalty = true;
     }
 
     if(penalty)

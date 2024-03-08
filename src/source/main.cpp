@@ -25,11 +25,6 @@ const int width = 6, height = 6, depth = 6;
 const int device_idx = 0;
 const int generations = 500;
 
-// todo;
-
-// rate schema if all epochs return same data
-// for program::breed -- need to copy during cross insert and cache values (rather than cross!!)
-
 organisation::parameters get_parameters(organisation::data &mappings)
 {
     organisation::parameters parameters(width, height, depth);
@@ -39,8 +34,7 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.max_values = 100;
     parameters.max_cache = parameters.max_values;
     parameters.max_cache_dimension = 3;
-    
-    //parameters.max_movements = 5;
+        
     parameters.max_movement_patterns = 8;
     parameters.max_insert_delay = 3;
 
@@ -54,16 +48,10 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.mappings = mappings;        
 
     // ***    
-    parameters.scores.max_collisions = 3;//2;//5;
+
+    parameters.scores.max_collisions = 3;
 
     // ***
-
-    //std::string input1("daisy daisy give me your answer do");
-    //std::string expected1("I'm half crazy for the love of you");
-            
-    //std::string input1("daisy daisy give me your answer do");
-    //std::string expected1("I'm half crazy for the");// crazy for the");
-    //std::string expected1("I'm half crazy for the love of");
 
     std::string input1("daisy give answer");
     std::string expected1("crazy me");
@@ -71,16 +59,11 @@ organisation::parameters get_parameters(organisation::data &mappings)
     std::string input2("daisy answer love");
     std::string expected2("do your");
 
-    //std::string input3("daisy crazy half");
-    //std::string expected3("love half");
-
     organisation::inputs::epoch epoch1(input1, expected1);
     organisation::inputs::epoch epoch2(input2, expected2);
-    //organisation::inputs::epoch epoch3(input3, expected3);
     
     parameters.input.push_back(epoch1);
     parameters.input.push_back(epoch2);
-    //parameters.input.push_back(epoch3);
     
     for(int i = 0; i < parameters.input.size(); ++i)
     {        

@@ -30,95 +30,6 @@ void organisation::genetic::inserts::insert::generate(data &source)
 {
     clear();
 
-int _w = _width/2;
-int _h = 2;//_height/2;
-int _d = _depth/2;
-
-value temp1;
-temp1.starting = organisation::point(_w-2,_h,_d);
-temp1.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement1(_min_movements, _max_movements);
-movement1.generate(source);
-temp1.movement = movement1;
-values.push_back(temp1);
-
-value temp2;
-temp2.starting = organisation::point(_w-1,_h,_d);
-temp2.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement2(_min_movements, _max_movements);
-movement2.generate(source);
-temp2.movement = movement2;
-values.push_back(temp2);
-
-value temp3;
-temp3.starting = organisation::point(_w,_h,_d);
-temp3.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement3(_min_movements, _max_movements);
-movement3.generate(source);
-temp3.movement = movement3;
-values.push_back(temp3);
-
-value temp4;
-temp4.starting = organisation::point(_w+1,_h,_d);
-temp4.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement4(_min_movements, _max_movements);
-movement4.generate(source);
-temp4.movement = movement4;
-values.push_back(temp4);
-
-value temp5;
-temp5.starting = organisation::point((_width/2)+2,_height/2,_depth/2);
-temp5.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement5(_min_movements, _max_movements);
-movement5.generate(source);
-temp5.movement = movement5;
-values.push_back(temp5);
-/*
-value temp6;
-temp6.starting = organisation::point((_width/2)+3,_height/2,_depth/2);
-temp6.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement6(_min_movements, _max_movements);
-movement6.generate(source);
-temp6.movement = movement6;
-values.push_back(temp6);
-*/
-
-/*
-value temp1;
-temp1.starting = organisation::point((_width/2)-1,(_height/2)-1,_depth/2);
-temp1.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement1(_min_movements, _max_movements);
-movement1.generate(source);
-temp1.movement = movement1;
-values.push_back(temp1);
-
-value temp2;
-temp2.starting = organisation::point((_width/2)+1,(_height/2)-1,_depth/2);
-temp2.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement2(_min_movements, _max_movements);
-movement2.generate(source);
-temp2.movement = movement2;
-values.push_back(temp2);
-
-value temp3;
-temp3.starting = organisation::point((_width/2)-1,(_height/2)+1,_depth/2);
-temp3.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement3(_min_movements, _max_movements);
-movement3.generate(source);
-temp3.movement = movement3;
-values.push_back(temp3);
-
-value temp4;
-temp4.starting = organisation::point((_width/2)+1,(_height/2)+1,_depth/2);
-temp4.delay = (std::uniform_int_distribution<int>{_min_insert_delay, _max_insert_delay})(generator);
-movements::movement movement4(_min_movements, _max_movements);
-movement4.generate(source);
-temp4.movement = movement4;
-values.push_back(temp4);
-*/
-
-/*
-
     int length = (std::uniform_int_distribution<int>{_min_movement_patterns, _max_movement_patterns})(generator);
 
     for(int i = 0; i < length; ++i)
@@ -135,7 +46,6 @@ values.push_back(temp4);
 
         values.push_back(temp);
     }
-    */
 }
 
 bool organisation::genetic::inserts::insert::mutate(data &source)

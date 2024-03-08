@@ -6,7 +6,7 @@ This is a work in progress to investigate how a data storage solution may self o
 
 The underlying principal is to test if a fundamentally chaotic system can self-organise into a stable data storage and retrieval system.
 
-Variations in insert methods.
+This version differs from the projects data-self-organisation-ii and iii in having modifications for parallel data inserts, rather than sequentially.
 
 # Method
 
