@@ -40,10 +40,12 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.max_cache = parameters.max_values;
     parameters.max_cache_dimension = 3;
     
-    //parameters.max_movements = 5;
-    parameters.min_movement_patterns = 4;
-    parameters.max_movement_patterns = 5;
-    parameters.max_insert_delay = 5;//3;
+    //parameters.min_movements = 10;
+    //parameters.max_movements = 15;
+
+    parameters.min_movement_patterns = 8;//6;
+    parameters.max_movement_patterns = 8;//7;
+    parameters.max_insert_delay = 8;//7;//3;
 
     parameters.population = parameters.clients() * 4;
 
@@ -55,7 +57,7 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.mappings = mappings;        
 
     // ***    
-    parameters.scores.max_collisions = 0;//3;//2;//5;
+    parameters.scores.max_collisions = 0;//1;//0;//3;//2;//5;
 
     // ***
 
@@ -66,8 +68,8 @@ organisation::parameters get_parameters(organisation::data &mappings)
     //std::string expected1("I'm half crazy for the");// crazy for the");
     //std::string expected1("I'm half crazy for the love of");
 
-    std::string input1("daisy daisy give me answer");
-    std::string expected1("I'm half crazy");
+    std::string input1("daisy daisy give me your answer do");
+    std::string expected1("I'm half crazy for the love of");
 
     std::string input2("daisy answer love");
     std::string expected2("do your");

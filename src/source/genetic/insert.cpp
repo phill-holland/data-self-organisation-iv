@@ -271,11 +271,13 @@ bool organisation::genetic::inserts::insert::validate(data &source)
 {
     if(values.empty()) { std::cout << "insert::validate(false): values is empty\r\n"; return false; }
 
-    if(values.size() < _min_movement_patterns)//||(values.size() >= _max_movement_patterns))
+    /*
+    if(values.size() < _min_movement_patterns)
     {
         std::cout << "insert::validate(false): movement out of bounds\r\n"; 
         return false; 
     }
+    */
 
     for(auto &it: values)
     {
