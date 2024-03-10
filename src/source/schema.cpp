@@ -103,7 +103,12 @@ void organisation::schema::compute(std::vector<organisation::compute> values, sc
         ++i;
 
         if(it->value.size() <= 0) penalty = true;
-        else if((i > 1)&&(it->value == first)) penalty = true;
+        else if(i > 1)
+        {
+            if(it->value == first) penalty = true;
+            //if(first.find(it->value)!=std::string::npos) penalty = true;
+            //else if(it->value.find(first)!=std::string::npos) penalty = true;
+        }
     }
 
     if(penalty)

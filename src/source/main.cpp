@@ -21,7 +21,7 @@ using namespace std;
 
 const organisation::dictionary dictionary;
 
-const int width = 6, height = 6, depth = 6;
+const int width = 6, height = 4, depth = 4; //6,6,6
 const int device_idx = 0;
 const int generations = 500;
 
@@ -36,18 +36,18 @@ organisation::parameters get_parameters(organisation::data &mappings)
 
     parameters.dim_clients = organisation::point(10,10,10);
     parameters.iterations = 30;
-    parameters.max_values = 100;
-    parameters.max_cache = parameters.max_values;
-    parameters.max_cache_dimension = 3;
+    parameters.max_values = 64;//100;
+    parameters.max_cache = parameters.max_values / 2;
+    parameters.max_cache_dimension = 1;//3;
     
-    //parameters.min_movements = 10;
-    //parameters.max_movements = 15;
+    parameters.min_movements = 1;
+    parameters.max_movements = 1;
 
-    parameters.min_movement_patterns = 8;//6;
-    parameters.max_movement_patterns = 8;//7;
-    parameters.max_insert_delay = 8;//7;//3;
+    parameters.min_movement_patterns = 2;//8;//6;
+    parameters.max_movement_patterns = 2;//8;//7;
+    parameters.max_insert_delay = 1;//7;//3;
 
-    parameters.population = parameters.clients() * 4;
+    parameters.population = parameters.clients() * 8;//4;
 
     parameters.output_stationary_only = true;
     
@@ -57,32 +57,28 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.mappings = mappings;        
 
     // ***    
-    parameters.scores.max_collisions = 0;//1;//0;//3;//2;//5;
+    parameters.scores.max_collisions = 1;//2;//0;//1;//0;//3;//2;//5;
 
     // ***
 
     //std::string input1("daisy daisy give me your answer do");
-    //std::string expected1("I'm half crazy for the love of you");
-            
-    //std::string input1("daisy daisy give me your answer do");
-    //std::string expected1("I'm half crazy for the");// crazy for the");
     //std::string expected1("I'm half crazy for the love of");
 
-    std::string input1("daisy daisy give me your answer do");
-    std::string expected1("I'm half crazy for the love of");
+    std::string input1("daisy give");
+    std::string expected1("I'm half");
 
-    std::string input2("daisy answer love");
-    std::string expected2("do your");
+    std::string input2("daisy answer");
+    std::string expected2("love you");
 
     //std::string input3("daisy crazy half");
     //std::string expected3("love half");
 
     organisation::inputs::epoch epoch1(input1, expected1);
-    //organisation::inputs::epoch epoch2(input2, expected2);
+    organisation::inputs::epoch epoch2(input2, expected2);
     //organisation::inputs::epoch epoch3(input3, expected3);
     
     parameters.input.push_back(epoch1);
-    //parameters.input.push_back(epoch2);
+    parameters.input.push_back(epoch2);
     //parameters.input.push_back(epoch3);
     
     for(int i = 0; i < parameters.input.size(); ++i)

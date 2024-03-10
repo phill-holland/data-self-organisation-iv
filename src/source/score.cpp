@@ -127,6 +127,10 @@ bool organisation::scores::score::compute(organisation::compute value, settings 
 		int collisions = value.stats.collisions;
 		if(collisions > MAX_COLLISIONS) collisions = MAX_COLLISIONS;
 		if(!set(((float)collisions) / ((float)MAX_COLLISIONS), score_len)) valid = false;
+
+//****
+		if(collisions == 0) return true;
+//****
 	}
  	
 	const int alphabet_len = alphabet.size();		
