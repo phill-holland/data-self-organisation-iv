@@ -119,6 +119,45 @@ bool organisation::genetic::collisions::set(int source, int idx)
     return true;
 }
 
+std::vector<organisation::vector> organisation::genetic::collisions::get(organisation::point value)
+{
+    std::vector<vector> results;
+
+    int index = value.x * _max_collisions;
+    int temp = 0;
+    for(int i = 0; i < _max_collisions; ++i)
+    {
+        if(get(temp, i + index))
+        {
+            vector v;
+            if(v.decode(temp)) results.push_back(v);
+        }
+    }
+
+    return results;
+}
+
+std::vector<organisation::vector> organisation::genetic::collisions::get(organisation::vector direction)
+{
+    std::vector<vector> results;
+    int value = direction.encode();
+
+    for(int i = 0; i < _max_mappings; ++i)
+    {
+        int temp = 0;        
+        if(get(temp,(i * _max_collisions) + value))
+        {
+            vector v;
+            if(v.decode(temp))
+            {
+                if(!v.isempty()) results.push_back(v);
+            }        
+        }
+    }
+
+    return results;
+}
+
 void organisation::genetic::collisions::copy(const collisions &source)
 {
     clear();

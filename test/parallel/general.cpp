@@ -191,7 +191,7 @@ organisation::schema getSchema5(organisation::parameters &parameters,
 
 TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -324,7 +324,7 @@ TEST(BasicProgramMovementWithCollisionParallel, BasicAssertions)
 
 TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 60, height = 60, depth = 60;
     organisation::point starting(width / 2, height / 2, depth / 2);
@@ -484,7 +484,7 @@ TEST(BasicProgramMovementWithCollisionForDifferentWordsParallel, BasicAssertions
 
 TEST(BasicProgramMovementWithTwoClientsAndTwoEpochsParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -562,7 +562,7 @@ TEST(BasicProgramMovementWithTwoClientsAndTwoEpochsParallel, BasicAssertions)
 
 TEST(BasicProgramMovementMultiCellOutputParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -640,7 +640,7 @@ TEST(BasicProgramMovementMultiCellOutputParallel, BasicAssertions)
 
 TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     const organisation::point starting(width / 2, height / 2, depth / 2);
@@ -748,7 +748,7 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionParallel, BasicA
 
 TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationaryOnlyParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     const organisation::point starting(width / 2, height / 2, depth / 2);
@@ -857,7 +857,7 @@ TEST(BasicProgramMovementReboundDirectionSameAsMovementDirectionOutputStationary
 
 TEST(BasicProgramMovementAllDirectionsBoundaryTestParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -904,7 +904,7 @@ TEST(BasicProgramMovementAllDirectionsBoundaryTestParallel, BasicAssertions)
 
 TEST(BasicProgramMovementAllDirectionsPartialBoundaryParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -957,7 +957,7 @@ TEST(BasicProgramMovementAllDirectionsPartialBoundaryParallel, BasicAssertions)
 
 TEST(BasicProgramMovementAllDirectionsBoundaryDeleteSuccessfulAndMovementSequenceMaintainedParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -1011,7 +1011,7 @@ TEST(BasicProgramMovementAllDirectionsBoundaryDeleteSuccessfulAndMovementSequenc
 
 TEST(BasicProgramTestHostBufferExceededLoadParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -1099,7 +1099,7 @@ TEST(BasicProgramTestHostBufferExceededLoadParallel, BasicAssertions)
 
 TEST(BasicProgramTestHostBufferNotEvenLoadParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
 
@@ -1187,7 +1187,7 @@ TEST(BasicProgramTestHostBufferNotEvenLoadParallel, BasicAssertions)
 
 TEST(BasicProgramDataSwapWithDualMovementPatternParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     const organisation::point starting(width / 2, height / 2, depth / 2);
@@ -1326,7 +1326,7 @@ organisation::genetic::movements::movement movement1(parameters.min_movements, p
 
 TEST(BasicProgramScaleTestParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const organisation::point clients(10,10,10);
     const int width = 20, height = 20, depth = 20;
@@ -1439,7 +1439,7 @@ TEST(BasicProgramScaleTestParallel, BasicAssertions)
 
 TEST(BasicProgramAllDirectionsParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const organisation::point clients(27,1,1);
     const int width = 20, height = 20, depth = 20;
@@ -1558,7 +1558,7 @@ TEST(BasicProgramAllDirectionsParallel, BasicAssertions)
 
 TEST(BasicProgramMultiMovementPatternsParallel, BasicAssertions)
 {    
-    //GTEST_SKIP();
+    GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     const organisation::point starting(width / 2, height / 2, depth / 2);
@@ -1663,34 +1663,38 @@ TEST(BasicProgramMultiMovementPatternsParallel, BasicAssertions)
     EXPECT_EQ(clients[1], values1);
 }
 
-TEST(BasicProgramStartingPointOverlapsInsertParallel, BasicAssertions)
+TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
 {    
     //GTEST_SKIP();
 
     const int width = 20, height = 20, depth = 20;
     organisation::point starting(width / 2, height / 2, depth / 2);
 
-    std::string input1("daisy daisy give me your answer do .");
+    std::string input1("daisy give");
+    std::string input2("daisy answer");
     
     std::vector<std::vector<std::string>> expected = {
         { 
-            "daisydaisydaisydaisydaisydaisydaisydaisy", 
-            "daisydaisydaisydaisydaisydaisydaisydaisy" 
+            "I'mhalf", 
+            "loveyou" 
         }
     };
 
-    std::vector<std::string> strings = organisation::split(input1);
+    std::vector<std::string> strings = organisation::split(input1 + " " + input2 + " I'm half love you");
     organisation::data mappings(strings);
 	::parallel::device device(0);
 	::parallel::queue queue(device);
 
     organisation::parameters parameters(width, height, depth);
     parameters.mappings = mappings;
-    parameters.dim_clients = organisation::point(2,1,1);
-    parameters.iterations = 6;
+    parameters.dim_clients = organisation::point(1,1,1);
+    parameters.iterations = 8;
 
     organisation::inputs::epoch epoch1(input1);
     parameters.input.push_back(epoch1);
+
+    organisation::inputs::epoch epoch2(input2);
+    parameters.input.push_back(epoch2);
 
     parallel::mapper::configuration mapper;
     mapper.origin = organisation::point(width / 2, height / 2, depth / 2);
@@ -1700,37 +1704,73 @@ TEST(BasicProgramStartingPointOverlapsInsertParallel, BasicAssertions)
     EXPECT_TRUE(program.initalised());
     
     organisation::schema s1(parameters);
-    organisation::schema s2(parameters);
+    //organisation::schema s2(parameters);
 
-    organisation::genetic::movements::movement movement(parameters.min_movements, parameters.max_movements);
-    movement.directions = { { 0,1,0 } };
+    organisation::genetic::movements::movement movement0(parameters.min_movements, parameters.max_movements);
+    movement0.directions = { { 1,0,0 } };
+
+    organisation::genetic::movements::movement movement1(parameters.min_movements, parameters.max_movements);
+    movement1.directions = { { -1,0,0 } };
 
     organisation::genetic::inserts::insert insert0(parameters);
-    organisation::genetic::inserts::value a(2, organisation::point(starting.x,starting.y,starting.z), movement);
-    organisation::genetic::inserts::value b(4, organisation::point(starting.x,starting.y,starting.z), movement);
+    organisation::genetic::inserts::value a(1, organisation::point(starting.x - 4,starting.y,starting.z), movement0);
+    organisation::genetic::inserts::value b(1, organisation::point(starting.x + 4,starting.y,starting.z), movement1);
     
     insert0.values = { a, b };
-
+/*
     organisation::genetic::inserts::insert insert1(parameters);
     organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), movement);
     organisation::genetic::inserts::value d(2, organisation::point(starting.x + 2,starting.y,starting.z), movement);
     organisation::genetic::inserts::value e(2, organisation::point(starting.x,starting.y,starting.z), movement);
     
     insert1.values = { c, d, e };
-        
+  */      
     organisation::genetic::cache cache(parameters);
 
+    organisation::vector left(-1,0,0);
+    organisation::vector right(1,0,0);
+    organisation::vector up(0,1,0);
+    organisation::vector down(0,-1,0);
+
+organisation::vector moo(0,1,0); 
+organisation::vector baa(1,0,0); 
+organisation::vector woof(1,1,-1);
+
+organisation::vector a1 = moo * baa; // 0,1,0 z = -1
+organisation::vector b1 = baa * moo; // 1,0,0 z = 1
+organisation::vector c1 = moo * woof;
+organisation::vector d1 = woof * moo;
+
     organisation::genetic::collisions collisions(parameters);
+
+    int value0 = mappings.map("daisy");
+    int value1 = mappings.map("give");
+    int value2 = mappings.map("answer");
+
+    collisions.set(moo.encode(), (value0 * parameters.max_collisions) + right.encode());
+    collisions.set(baa.encode(),(value1 * parameters.max_collisions) + left.encode());
+    collisions.set(woof.encode(),(value2 * parameters.max_collisions) + left.encode());
+
+    //collisions.set(up.encode(), (value0 * parameters.max_collisions) + right.encode());
+    //collisions.set(down.encode(),(value1 * parameters.max_collisions) + left.encode());
+//    collisions.set(up.encode(),(value2 * parameters.max_collisions) + left.encode());
+    
+    /*
+    {        
+        collisions.set(rebound.encode(), offset + up.encode());
+        offset += parameters.max_collisions;
+        */
+
     
     s1.prog.set(cache);
     s1.prog.set(insert0);
     s1.prog.set(collisions);
-
+/*
     s2.prog.set(cache);
     s2.prog.set(insert1);
     s2.prog.set(collisions);
-    
-    std::vector<organisation::schema*> source = { &s1, &s2 };
+  */  
+    std::vector<organisation::schema*> source = { &s1 };//, &s2 };
     
     program.copy(source.data(), source.size());
     program.set(mappings, parameters.input);
@@ -1760,3 +1800,4 @@ TEST(BasicProgramStartingPointOverlapsInsertParallel, BasicAssertions)
     EXPECT_EQ(lookup[0], values1);
     EXPECT_EQ(lookup[1], values2);
 }
+

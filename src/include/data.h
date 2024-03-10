@@ -1,6 +1,8 @@
+#include "point.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
+#include <random>
 
 #ifndef _ORGANISATION_DATA
 #define _ORGANISATION_DATA
@@ -9,6 +11,8 @@ namespace organisation
 {    
     class data
     {
+        static std::mt19937_64 generator;
+
         std::unordered_map<std::string, int> forward;
         std::unordered_map<int, std::string> reverse;
 
@@ -40,6 +44,8 @@ namespace organisation
         std::vector<int> get(std::string source);
 
         std::vector<int> all();
+
+        point generate(int dimensions);
         
     public:
         void copy(const data &source);      
