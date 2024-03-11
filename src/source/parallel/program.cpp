@@ -347,11 +347,11 @@ void organisation::parallel::program::run(organisation::data &mappings)
             outputting(epoch, iterations);
             boundaries();
 
-std::cout << "positions epoch(" << epoch << "):";
-outputarb(devicePositions, totalValues);
-std::cout << "values:";
-outputarb(deviceValues, totalValues);
-std::cout << "\r\n";
+//std::cout << "positions epoch(" << epoch << "):";
+//outputarb(devicePositions, totalValues);
+//std::cout << "values:";
+//outputarb(deviceValues, totalValues);
+//std::cout << "\r\n";
         };
 
         move(mappings);            
@@ -502,7 +502,7 @@ void organisation::parallel::program::next()
         auto _max_movement_patterns = settings.max_movement_patterns;
         auto _max_words = settings.mappings.maximum();
 
-sycl::stream out(8192, 1024, h);
+//sycl::stream out(8192, 1024, h);
 
         h.parallel_for(num_items, [=](auto i) 
         {  
@@ -540,14 +540,15 @@ sycl::stream out(8192, 1024, h);
                             direction1.x() * direction2.y() - direction1.y() * direction2.x(),
                             0.0f };
                         
-    out << "c1:" << collision.y() << " d1: " << direction1.x() << "," << direction1.y() << "," << direction1.z() << " d2:" << direction2.x() << "," << direction2.y() << "," << direction2.z() << " new:" << new_direction.x() << "," << new_direction.y() << "," << new_direction.z() << "\n";
+    //out << "c1:" << collision.y() << " d1: " << direction1.x() << "," << direction1.y() << "," << direction1.z() << " d2:" << direction2.x() << "," << direction2.y() << "," << direction2.z() << " new:" << new_direction.x() << "," << new_direction.y() << "," << new_direction.z() << "\n";
 
                         _nextDirections[i] = new_direction;
                         //_nextDirections[i] = direction1;
                     }
                     else
                     {
-                        int key1 = GetCollidedKey(_positions[i], _nextPositions[i]);
+// update for dual key                         
+                        int key1 = GetCollidedKey(_positions[i], _nextPositions[i]);                        
                         int offset1 = (client * _max_collisions * _max_words) + (_max_collisions * _values[i].x()) + key1;
                         sycl::float4 direction1 = _collisions[offset1];
                         _nextDirections[i] = direction1;

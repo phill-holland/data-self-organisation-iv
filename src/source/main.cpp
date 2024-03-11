@@ -40,8 +40,8 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.max_cache = parameters.max_values / 2;
     parameters.max_cache_dimension = 3;//1;//3;
     
-    parameters.min_movements = 1;
-    parameters.max_movements = 1;
+    //parameters.min_movements = 1;
+    //parameters.max_movements = 1;
 
     parameters.min_movement_patterns = 2;//8;//6;
     parameters.max_movement_patterns = 2;//8;//7;
