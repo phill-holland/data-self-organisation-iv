@@ -93,7 +93,6 @@ void organisation::schema::compute(std::vector<organisation::compute> values, sc
 {
     int i = 0;
     bool penalty = false;
-
     std::string first = "";
     if(values.size() > 0) first = values[0].value;
 

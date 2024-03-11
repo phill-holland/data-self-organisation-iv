@@ -25,11 +25,6 @@ const int width = 6, height = 6, depth = 6; //6,6,6
 const int device_idx = 0;
 const int generations = 500;
 
-// todo;
-
-// rate schema if all epochs return same data
-// for program::breed -- need to copy during cross insert and cache values (rather than cross!!)
-
 organisation::parameters get_parameters(organisation::data &mappings)
 {
     organisation::parameters parameters(width, height, depth);
@@ -70,16 +65,11 @@ organisation::parameters get_parameters(organisation::data &mappings)
     std::string input2("daisy answer");
     std::string expected2("love you");
 
-    //std::string input3("daisy crazy half");
-    //std::string expected3("love half");
-
     organisation::inputs::epoch epoch1(input1, expected1);
     organisation::inputs::epoch epoch2(input2, expected2);
-    //organisation::inputs::epoch epoch3(input3, expected3);
     
     parameters.input.push_back(epoch1);
     parameters.input.push_back(epoch2);
-    //parameters.input.push_back(epoch3);
     
     for(int i = 0; i < parameters.input.size(); ++i)
     {        
