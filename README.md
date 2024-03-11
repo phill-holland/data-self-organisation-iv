@@ -86,7 +86,7 @@ This method ensures it encourages partial answers, but with differing word posit
 
 - Limit inputted word age in the system by some mechanism, to enable length of output to be limited in some way (words must die to stop infinite output!)
 
-- Extend non-commutative collision calculate to include impacts with stationary data objects stored in the cache class
+- Extend non-commutative collision calculate to include impacts with stationary data objects stored in the cache class (parallel/program.cpp line 524)
 
 - Either implement the above method, support by the cross-product of two vectors, or add further choices to the collision class
 genetic algorithm generation system;
@@ -99,6 +99,9 @@ int index = (word_token_a * max_words) + word_token_b;
 - Retest long sentence chains as input as well as output
 
 - Cache, add stationary data cells, that do not output data when collided with (a pseudowall)
+
+- Collision chain is currently limited to a single "rebound" movement before returning to default movement behaviour, extend
+collision movements to be > 1
 
 - <strike>Fix collision detection of native CPU code (native code has somewhat been ignored!)</strike> will not fix
 

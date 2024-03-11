@@ -57,7 +57,6 @@ namespace organisation
 
     public:
         void set(genetic::cache &source) { caches = source; }
-        //void set(genetic::movements::movement &source) { movement = source; }
         void set(genetic::collisions &source) { collisions = source; }
         void set(genetic::inserts::insert &source) { insert = source; }
         

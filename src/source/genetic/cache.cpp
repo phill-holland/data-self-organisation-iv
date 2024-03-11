@@ -117,34 +117,6 @@ bool organisation::genetic::cache::validate(data &source)
 
 void organisation::genetic::cache::generate(data &source)
 {
-    /*
-    clear();
-                
-    std::vector<int> raw = source.all();
-
-    //const int _w = _width / 2;
-    const int _h = _height;
-    const int _d = _depth / 2;
-
-    const int amount = 30;
-    for(int i = 0; i < amount; ++i)
-    {
-        point value(raw[i % raw.size()],-1,-1);
-
-        div_t d = div(i,_width);
-
-        int x = d.quot;
-        int y = d.rem;
-
-        point position(x,_h - 1 - y,_d);
-        int index = ((_width * _height) * position.z) + ((position.y * _width) + position.x);
-        points[index] = position;
-
-        values.push_back(std::tuple<point,point>(value,position));
-        if(values.size() >= _max_values) return;
-    }
-*/
-    
     clear();
                 
     std::vector<int> raw = source.all();

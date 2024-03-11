@@ -39,14 +39,6 @@ bool organisation::genetic::movements::movement::validate(data &source)
         return false; 
     }
 
-    /*
-    if(directions.size() < _min_movements)
-    {
-        std::cout << "movement::validate(false): movements out of bounds\r\n"; 
-        return false; 
-    }
-    */
-
     for(auto &direction: directions)
     {
         if((direction.x < -1)||(direction.x > 1)

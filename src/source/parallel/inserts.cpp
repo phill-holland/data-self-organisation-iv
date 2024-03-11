@@ -201,17 +201,6 @@ int organisation::parallel::inserts::insert(int epoch)
 
     qt.memcpy(hostTotalNewInserts, deviceTotalNewInserts, sizeof(int)).wait();
 
-/*
-if(hostTotalNewInserts[0]>0)
-{
-    std::cout << "new positions: ";
-    outputarb(deviceNewPositions,hostTotalNewInserts[0]);
-    std::cout << "new values: ";
-    outputarb(deviceNewValues,hostTotalNewInserts[0]);
-    std::cout << "new move: ";
-outputarb(deviceNewMovementPatternIdx,hostTotalNewInserts[0]);
-}
-*/
     return hostTotalNewInserts[0];
 
 }
@@ -297,16 +286,10 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
         {
             hostInsertsDelay[pattern + (index * settings.max_inserts)] = it.delay;
             hostInsertsStartingPosition[pattern + (index * settings.max_inserts)] = { (float)it.starting.x, (float)it.starting.y, (float)it.starting.z, 0.0f };
-            hostInsertsMovementPatternIdx[pattern + (index * settings.max_inserts)] = pattern;//it.movementPatternIdx;
-
-            //for(auto &it: prog->movement.directions)
+            hostInsertsMovementPatternIdx[pattern + (index * settings.max_inserts)] = pattern;
+            
             for(auto &direction: it.movement.directions)
             {            
-                //int pattern = std::get<0>(it);
-                //vector direction = jt;//std::get<1>(it);
-
-//settings.max_movement_patterns * settings.clients()
-
                 int m_count = hostMovementsCounts[(index * settings.max_movement_patterns) + pattern];
                 
                 if(m_count < settings.max_movements)
@@ -318,7 +301,6 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
             }
 
             ++pattern;
-            //if(pattern >= settings.max_inserts) break;
             if(pattern >= settings.max_movement_patterns) break;
         }
         
@@ -361,11 +343,6 @@ void organisation::parallel::inserts::copy(::organisation::schema **source, int 
     }   
 
     qt.memcpy(deviceInsertsDelayClone, deviceInsertsDelay, sizeof(int) * settings.max_inserts * settings.clients()).wait();
-
-//std::cout << "movements: ";
-//outputarb(deviceMovements, settings.max_movements * settings.max_movement_patterns * settings.clients());
-//std::cout << "movements counts: ";
-//outputarb(deviceMovementsCounts, settings.max_movement_patterns * settings.clients());
 }
 
 void organisation::parallel::inserts::outputarb(int *source, int length)

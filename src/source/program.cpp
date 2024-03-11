@@ -55,103 +55,6 @@ bool organisation::program::empty()
 
     return false;
 }
-/*
-void organisation::program::generate(data &source)
-{
-    clear();
-
-    templates::genetic *genes[] = 
-    { 
-        &collisions,
-        &insert
-    }; 
-
-    const int components = sizeof(genes) / sizeof(templates::genetic*);
-    for(int i = 0; i < components; ++i)
-    {
-        genes[i]->generate(source);
-    }
-
-    // ***
-
-    struct buf
-    {
-        point position;
-        vector direction;
-        int pattern;
-        int pattern_idx;
-    };
-
-    std::unordered_map<int,point> points; // ensure no duplicates!
-    std::vector<buf> stack;//std::tuple<point,vector>> stack;
-
-    int pattern = 0;
-    for(auto &it: insert.values)
-    {
-        if(it.movement.size() > 0)
-        {
-            buf temp;
-            temp.position = it.starting;
-            temp.direction = it.movement.directions.front();
-            temp.pattern = pattern;
-            temp.pattern_idx = 1;
-
-            stack.push_back(temp);
-        }
-        ++pattern;
-    }
-
-const int iterations = 30;
-int iterator = 0;
-
-    while((!stack.empty())&&(iterator++<iterations))
-    {
-        buf temp = stack.back();
-        stack.pop_back();
-
-        if(temp.position.inside(_width,_height,_depth))
-        {
-            int index = ((_width * _height) * temp.position.z) + ((temp.position.y * _width) + temp.position.x);
-            points[index] = temp.position;
-
-            // generate a value position/point here, and then push the direction onto the stack!!
-            // collision direction!
-            // ***
-
-            const int chance = (std::uniform_int_distribution<int>{0, 10})(generator);
-            if(chance <= 3)
-            {
-                point value = source.generate(1);
-                caches.set(value, temp.position);
-                std::vector<vector> directions = collisions.get(temp.direction);
-                for(auto &it: directions)
-                {
-                    buf output;
-                    output.position = temp.position - temp.direction;
-                    output.direction = it;
-                    output.pattern_idx = temp.pattern_idx;
-                    output.pattern = temp.pattern;
-
-                    stack.push_back(output);
-                }                
-            }
-            else
-            {
-                point old = temp.position;
-                temp.position = temp.position + temp.direction;
-                if(temp.position != old)
-                {                    
-                    temp.direction = insert.values[temp.pattern].movement.directions[temp.pattern_idx];
-                    temp.pattern_idx++;
-                    if(temp.pattern_idx > insert.values[temp.pattern].movement.directions.size()) temp.pattern_idx = 0;
-
-                    stack.push_back(temp);
-                }
-            }
-        }
-    };    
-}
-*/
 
 void organisation::program::generate(data &source)
 {
@@ -475,15 +378,13 @@ void organisation::program::copy(const program &source)
     length = source.length;
 
     caches.copy(source.caches);
-    //movement.copy(source.movement);
     collisions.copy(source.collisions);
     insert.copy(source.insert);    
 }
 
 bool organisation::program::equals(const program &source)
 {
-    if(!caches.equals(source.caches)) return false;
-    //if(!movement.equals(source.movement)) return false;
+    if(!caches.equals(source.caches)) return false;    
     if(!collisions.equals(source.collisions)) return false;
     if(!insert.equals(source.insert)) return false;
     
@@ -496,16 +397,14 @@ void organisation::program::cross(program &a, program &b)
 
     templates::genetic *ag[] = 
     { 
-        &a.caches,
-        //&a.movement,
+        &a.caches,        
         &a.collisions,
         &a.insert
     }; 
 
     templates::genetic *bg[] = 
     { 
-        &b.caches,
-        //&b.movement,
+        &b.caches,        
         &b.collisions,
         &b.insert
     }; 
@@ -513,7 +412,6 @@ void organisation::program::cross(program &a, program &b)
     templates::genetic *dest[] = 
     { 
         &caches,
-        //&movement,
         &collisions,
         &insert
     }; 
@@ -574,7 +472,6 @@ std::string organisation::program::serialise()
     std::vector<templates::serialiser*> sources = 
     { 
         &caches,
-        //&movement,
         &collisions,
         &insert
     }; 
@@ -596,7 +493,6 @@ void organisation::program::deserialise(std::string source)
 
     caches.clear();
     collisions.clear();
-    //movement.clear();
     insert.clear();
 
     while(std::getline(ss,value))
@@ -607,7 +503,6 @@ void organisation::program::deserialise(std::string source)
         if(stream >> type)
         {
             if(type == "D") caches.deserialise(value);
-            //else if(type == "M") movement.deserialise(value);
             else if(type == "C") collisions.deserialise(value);
             else if(type == "I") insert.deserialise(value);
         }
@@ -633,8 +528,7 @@ void organisation::program::load(std::string filename)
     if(source.is_open())
     {
         caches.clear();
-        collisions.clear();
-        //movement.clear();
+        collisions.clear();        
         insert.clear();
 
         for(std::string value; getline(source, value); )
@@ -644,8 +538,7 @@ void organisation::program::load(std::string filename)
 	            
             if(stream >> type)
             {
-                if(type == "D") caches.deserialise(value);
-                //else if(type == "M") movement.deserialise(value);
+                if(type == "D") caches.deserialise(value);                
                 else if(type == "C") collisions.deserialise(value);
                 else if(type == "I") insert.deserialise(value);
             }
