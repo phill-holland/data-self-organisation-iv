@@ -31,7 +31,6 @@ void organisation::program::reset(parameters &settings)
 void organisation::program::clear()
 {    
     caches.clear();
-    //movement.clear();
     collisions.clear();
     insert.clear();
 }
@@ -40,7 +39,6 @@ bool organisation::program::empty()
 {
     templates::genetic *genes[] = 
     { 
-        //&movement,
         &collisions,
         &insert
     }; 
@@ -57,7 +55,7 @@ bool organisation::program::empty()
 
     return false;
 }
-
+/*
 void organisation::program::generate(data &source)
 {
     clear();
@@ -153,8 +151,8 @@ int iterator = 0;
         }
     };    
 }
+*/
 
-/*
 void organisation::program::generate(data &source)
 {
     clear();
@@ -172,7 +170,6 @@ void organisation::program::generate(data &source)
         genes[i]->generate(source);
     }    
 }
-*/
 
 bool organisation::program::mutate(data &source)
 {    

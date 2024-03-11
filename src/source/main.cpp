@@ -21,7 +21,7 @@ using namespace std;
 
 const organisation::dictionary dictionary;
 
-const int width = 6, height = 4, depth = 4; //6,6,6
+const int width = 6, height = 6, depth = 6; //6,6,6
 const int device_idx = 0;
 const int generations = 500;
 
@@ -36,9 +36,9 @@ organisation::parameters get_parameters(organisation::data &mappings)
 
     parameters.dim_clients = organisation::point(10,10,10);
     parameters.iterations = 30;
-    parameters.max_values = 64;//100;
+    parameters.max_values = 100;//64;//100;
     parameters.max_cache = parameters.max_values / 2;
-    parameters.max_cache_dimension = 1;//3;
+    parameters.max_cache_dimension = 3;//1;//3;
     
     parameters.min_movements = 1;
     parameters.max_movements = 1;
@@ -47,7 +47,7 @@ organisation::parameters get_parameters(organisation::data &mappings)
     parameters.max_movement_patterns = 2;//8;//7;
     parameters.max_insert_delay = 1;//7;//3;
 
-    parameters.population = parameters.clients() * 8;//4;
+    parameters.population = parameters.clients() * 4;//4;
 
     parameters.output_stationary_only = true;
     

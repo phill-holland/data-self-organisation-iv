@@ -521,27 +521,37 @@ sycl::stream out(8192, 1024, h);
                     // then non-communative vector mult
                     // else basic direction1
                     // ***
-// return vector(y * src.z - z * src.y,z * src.x - x * src.z,x * src.y - y * src.x, 0);                     
-                    int key1 = GetCollidedKey(_positions[i], _nextPositions[i]);
-                    int offset1 = (client * _max_collisions * _max_words) + (_max_collisions * _values[i].x()) + key1;
+// return vector(y * src.z - z * src.y,z * src.x - x * src.z,x * src.y - y * src.x, 0);              
+                    if (_collisionKeys[collision.y()].x() > 0 && _collisionKeys[collision.y()].y() == i)
+                    {
+                        int key1 = GetCollidedKey(_positions[i], _nextPositions[i]);
+                        int offset1 = (client * _max_collisions * _max_words) + (_max_collisions * _values[i].x()) + key1;
 
-                    // key is wrong for this, needs to implement condition abour
-                    int key2 = GetCollidedKey(_positions[collision.y()], _nextPositions[collision.y()]);
-                    int offset2 = (client * _max_collisions * _max_words) + (_max_collisions * _values[collision.y()].x()) + key2;
+                        // key is wrong for this, needs to implement condition abour
+                        int key2 = GetCollidedKey(_positions[collision.y()], _nextPositions[collision.y()]);
+                        int offset2 = (client * _max_collisions * _max_words) + (_max_collisions * _values[collision.y()].x()) + key2;
 
-                    sycl::float4 direction1 = _collisions[offset1];
-                    sycl::float4 direction2 = _collisions[offset2];
+                        sycl::float4 direction1 = _collisions[offset1];
+                        sycl::float4 direction2 = _collisions[offset2];
 
-                    sycl::float4 new_direction = { 
-                        direction1.y() * direction2.z() - direction1.z() * direction2.y(),
-                        direction1.z() * direction2.x() - direction1.x() * direction2.z(),
-                        direction1.x() * direction2.y() - direction1.y() * direction2.x(),
-                        0.0f };
-                    
-out << "c1:" << collision.y() << " d1: " << direction1.x() << "," << direction1.y() << "," << direction1.z() << " d2:" << direction2.x() << "," << direction2.y() << "," << direction2.z() << " new:" << new_direction.x() << "," << new_direction.y() << "," << new_direction.z() << "\n";
+                        sycl::float4 new_direction = { 
+                            direction1.y() * direction2.z() - direction1.z() * direction2.y(),
+                            direction1.z() * direction2.x() - direction1.x() * direction2.z(),
+                            direction1.x() * direction2.y() - direction1.y() * direction2.x(),
+                            0.0f };
+                        
+    out << "c1:" << collision.y() << " d1: " << direction1.x() << "," << direction1.y() << "," << direction1.z() << " d2:" << direction2.x() << "," << direction2.y() << "," << direction2.z() << " new:" << new_direction.x() << "," << new_direction.y() << "," << new_direction.z() << "\n";
 
-                    _nextDirections[i] = new_direction;
-                    //_nextDirections[i] = direction1;
+                        _nextDirections[i] = new_direction;
+                        //_nextDirections[i] = direction1;
+                    }
+                    else
+                    {
+                        int key1 = GetCollidedKey(_positions[i], _nextPositions[i]);
+                        int offset1 = (client * _max_collisions * _max_words) + (_max_collisions * _values[i].x()) + key1;
+                        sycl::float4 direction1 = _collisions[offset1];
+                        _nextDirections[i] = direction1;
+                    }
                 }
                 else
                 {

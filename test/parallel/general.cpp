@@ -1672,13 +1672,17 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
 
     std::string input1("daisy give");
     std::string input2("daisy answer");
-    
+
+    std::string expected1 = "I'mhalf";
+    std::string expected2 = "loveyou";
+    /*
     std::vector<std::vector<std::string>> expected = {
         { 
             "I'mhalf", 
             "loveyou" 
         }
     };
+    */
 
     std::vector<std::string> strings = organisation::split(input1 + " " + input2 + " I'm half love you");
     organisation::data mappings(strings);
@@ -1688,8 +1692,9 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
     organisation::parameters parameters(width, height, depth);
     parameters.mappings = mappings;
     parameters.dim_clients = organisation::point(1,1,1);
-    parameters.iterations = 8;
-
+    parameters.output_stationary_only = true;
+    parameters.iterations = 10;//9;//8;
+    
     organisation::inputs::epoch epoch1(input1);
     parameters.input.push_back(epoch1);
 
@@ -1726,20 +1731,29 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
     insert1.values = { c, d, e };
   */      
     organisation::genetic::cache cache(parameters);
+    
+    cache.set(organisation::point(mappings.map("I'm"),-1,-1), organisation::point(11,10,9));
+    cache.set(organisation::point(mappings.map("half"),-1,-1), organisation::point(8,10,11));
+    cache.set(organisation::point(mappings.map("love"),-1,-1), organisation::point(10,11,11));
+    cache.set(organisation::point(mappings.map("you"),-1,-1), organisation::point(9,9,9));
 
     organisation::vector left(-1,0,0);
     organisation::vector right(1,0,0);
     organisation::vector up(0,1,0);
     organisation::vector down(0,-1,0);
 
-organisation::vector moo(0,1,0); 
+//organisation::vector moo(0,1,0); 
 organisation::vector baa(1,0,0); 
-organisation::vector woof(1,1,-1);
+//organisation::vector woof(1,1,-1);
+organisation::vector moo2(1,1,0); 
+organisation::vector woof2(-1,0,-1);
 
+/*
 organisation::vector a1 = moo * baa; // 0,1,0 z = -1
 organisation::vector b1 = baa * moo; // 1,0,0 z = 1
 organisation::vector c1 = moo * woof;
-organisation::vector d1 = woof * moo;
+organisation::vector d1 = woof2 * moo2;
+*/
 
     organisation::genetic::collisions collisions(parameters);
 
@@ -1747,9 +1761,17 @@ organisation::vector d1 = woof * moo;
     int value1 = mappings.map("give");
     int value2 = mappings.map("answer");
 
-    collisions.set(moo.encode(), (value0 * parameters.max_collisions) + right.encode());
+    collisions.set(moo2.encode(), (value0 * parameters.max_collisions) + right.encode());
     collisions.set(baa.encode(),(value1 * parameters.max_collisions) + left.encode());
-    collisions.set(woof.encode(),(value2 * parameters.max_collisions) + left.encode());
+    collisions.set(woof2.encode(),(value2 * parameters.max_collisions) + left.encode());
+
+    organisation::vector vz(0,0,-1);
+
+    int value3 = mappings.map("I'm");
+    int value4 = mappings.map("love");
+
+    collisions.set(vz.encode(), (value3 * parameters.max_collisions) + right.encode());
+    collisions.set(vz.encode(), (value4 * parameters.max_collisions) + right.encode());
 
     //collisions.set(up.encode(), (value0 * parameters.max_collisions) + right.encode());
     //collisions.set(down.encode(),(value1 * parameters.max_collisions) + left.encode());
@@ -1765,18 +1787,14 @@ organisation::vector d1 = woof * moo;
     s1.prog.set(cache);
     s1.prog.set(insert0);
     s1.prog.set(collisions);
-/*
-    s2.prog.set(cache);
-    s2.prog.set(insert1);
-    s2.prog.set(collisions);
-  */  
-    std::vector<organisation::schema*> source = { &s1 };//, &s2 };
+
+    std::vector<organisation::schema*> source = { &s1 };
     
     program.copy(source.data(), source.size());
     program.set(mappings, parameters.input);
 
     program.run(mappings);
-
+/*
     std::vector<organisation::parallel::value> values1 = {
         { organisation::point(10,13,10), organisation::point(0,-1,-1),  3, 0 },
         { organisation::point(10,11,10), organisation::point(0,-1,-1),  5, 0 }
@@ -1799,5 +1817,29 @@ organisation::vector d1 = woof * moo;
 
     EXPECT_EQ(lookup[0], values1);
     EXPECT_EQ(lookup[1], values2);
+*/
+    std::vector<std::unordered_map<int,std::string>> compare;
+    std::vector<organisation::outputs::output> results = program.get(mappings);
+    
+    for(auto &epoch: results)
+    {
+        std::unordered_map<int,std::vector<std::string>> data;
+        for(auto &output: epoch.values)
+        {
+            if(data.find(output.client) == data.end()) data[output.client] = { output.value };
+            else data[output.client].push_back(output.value);
+        }
+
+        std::unordered_map<int,std::string> temp;
+        for(auto &value: data)
+        {
+            temp[value.first] = std::reduce(value.second.begin(),value.second.end(),std::string(""));
+        }
+
+        compare.push_back(temp);
+    }
+std::cout << "moo " << compare[0][0] << " " << compare[1][0] << "\r\n";
+    EXPECT_EQ(expected1, compare[0][0]);
+    EXPECT_EQ(expected2, compare[1][0]);
 }
 
