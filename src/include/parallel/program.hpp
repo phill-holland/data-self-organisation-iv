@@ -30,7 +30,7 @@ namespace organisation
             sycl::float4 *devicePositions;            
             sycl::float4 *deviceNextPositions;
             sycl::float4 *deviceNextHalfPositions;
-            sycl::int4 *deviceValues; // ***
+            sycl::int4 *deviceValues;
             sycl::float4 *deviceNextDirections;
 
             int *deviceMovementIdx;
@@ -39,11 +39,9 @@ namespace organisation
             sycl::int4 *deviceClient;
 
             sycl::float4 *deviceCachePositions;
-            sycl::int4 *deviceCacheValues; // ***
+            sycl::int4 *deviceCacheValues;
             sycl::int4 *deviceCacheClients;
 
-            //sycl::float4 *deviceMovements;
-            //int *deviceMovementsCounts;
             int *deviceCollisionCounts;
             int *hostCollisionCounts;
             
@@ -53,22 +51,17 @@ namespace organisation
             sycl::int2 *deviceInsertCollisionKeys;
             
             sycl::float4 *hostCachePositions;
-            sycl::int4 *hostCacheValues; // ***
+            sycl::int4 *hostCacheValues;
             sycl::int4 *hostCacheClients;
 
-            //sycl::float4 *hostMovements;
-            //int *hostMovementsCounts;
-                        
-            // ***
-
-            sycl::int4 *deviceOutputValues; // ***
+            sycl::int4 *deviceOutputValues;
             int *deviceOutputIndex;
             sycl::int4 *deviceOutputClient;
 
-            int *deviceOutputTotalValues; // single int
+            int *deviceOutputTotalValues;
             
-            sycl::int4 *hostOutputValues; // ***
-            int *hostOutputIndex; // host iteration output
+            sycl::int4 *hostOutputValues;
+            int *hostOutputIndex;
             sycl::int4 *hostOutputClient;
 
             int *hostOutputTotalValues;
@@ -79,7 +72,7 @@ namespace organisation
             // ***
                         
             sycl::float4 *deviceNewPositions;
-            sycl::int4 *deviceNewValues; // ***
+            sycl::int4 *deviceNewValues;
             sycl::int4 *deviceNewClient;
             sycl::float4 *deviceNewNextDirections;
             int *deviceNewMovementIdx;

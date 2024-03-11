@@ -1675,15 +1675,7 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
 
     std::string expected1 = "I'mhalf";
     std::string expected2 = "loveyou";
-    /*
-    std::vector<std::vector<std::string>> expected = {
-        { 
-            "I'mhalf", 
-            "loveyou" 
-        }
-    };
-    */
-
+    
     std::vector<std::string> strings = organisation::split(input1 + " " + input2 + " I'm half love you");
     organisation::data mappings(strings);
 	::parallel::device device(0);
@@ -1693,7 +1685,7 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
     parameters.mappings = mappings;
     parameters.dim_clients = organisation::point(1,1,1);
     parameters.output_stationary_only = true;
-    parameters.iterations = 10;//9;//8;
+    parameters.iterations = 10;
     
     organisation::inputs::epoch epoch1(input1);
     parameters.input.push_back(epoch1);
@@ -1709,7 +1701,6 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
     EXPECT_TRUE(program.initalised());
     
     organisation::schema s1(parameters);
-    //organisation::schema s2(parameters);
 
     organisation::genetic::movements::movement movement0(parameters.min_movements, parameters.max_movements);
     movement0.directions = { { 1,0,0 } };
@@ -1722,14 +1713,7 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
     organisation::genetic::inserts::value b(1, organisation::point(starting.x + 4,starting.y,starting.z), movement1);
     
     insert0.values = { a, b };
-/*
-    organisation::genetic::inserts::insert insert1(parameters);
-    organisation::genetic::inserts::value c(2, organisation::point(starting.x + 2,starting.y,starting.z), movement);
-    organisation::genetic::inserts::value d(2, organisation::point(starting.x + 2,starting.y,starting.z), movement);
-    organisation::genetic::inserts::value e(2, organisation::point(starting.x,starting.y,starting.z), movement);
-    
-    insert1.values = { c, d, e };
-  */      
+
     organisation::genetic::cache cache(parameters);
     
     cache.set(organisation::point(mappings.map("I'm"),-1,-1), organisation::point(11,10,9));
@@ -1741,19 +1725,10 @@ TEST(BasicProgramDualEpochProveOfConceptTestParallel, BasicAssertions)
     organisation::vector right(1,0,0);
     organisation::vector up(0,1,0);
     organisation::vector down(0,-1,0);
-
-//organisation::vector moo(0,1,0); 
-organisation::vector baa(1,0,0); 
-//organisation::vector woof(1,1,-1);
-organisation::vector moo2(1,1,0); 
-organisation::vector woof2(-1,0,-1);
-
-/*
-organisation::vector a1 = moo * baa; // 0,1,0 z = -1
-organisation::vector b1 = baa * moo; // 1,0,0 z = 1
-organisation::vector c1 = moo * woof;
-organisation::vector d1 = woof2 * moo2;
-*/
+    
+    organisation::vector v1(1,1,0); 
+    organisation::vector v2(1,0,0); 
+    organisation::vector v3(-1,0,-1);
 
     organisation::genetic::collisions collisions(parameters);
 
@@ -1761,9 +1736,9 @@ organisation::vector d1 = woof2 * moo2;
     int value1 = mappings.map("give");
     int value2 = mappings.map("answer");
 
-    collisions.set(moo2.encode(), (value0 * parameters.max_collisions) + right.encode());
-    collisions.set(baa.encode(),(value1 * parameters.max_collisions) + left.encode());
-    collisions.set(woof2.encode(),(value2 * parameters.max_collisions) + left.encode());
+    collisions.set(v1.encode(), (value0 * parameters.max_collisions) + right.encode());
+    collisions.set(v2.encode(),(value1 * parameters.max_collisions) + left.encode());
+    collisions.set(v3.encode(),(value2 * parameters.max_collisions) + left.encode());
 
     organisation::vector vz(0,0,-1);
 
@@ -1772,17 +1747,6 @@ organisation::vector d1 = woof2 * moo2;
 
     collisions.set(vz.encode(), (value3 * parameters.max_collisions) + right.encode());
     collisions.set(vz.encode(), (value4 * parameters.max_collisions) + right.encode());
-
-    //collisions.set(up.encode(), (value0 * parameters.max_collisions) + right.encode());
-    //collisions.set(down.encode(),(value1 * parameters.max_collisions) + left.encode());
-//    collisions.set(up.encode(),(value2 * parameters.max_collisions) + left.encode());
-    
-    /*
-    {        
-        collisions.set(rebound.encode(), offset + up.encode());
-        offset += parameters.max_collisions;
-        */
-
     
     s1.prog.set(cache);
     s1.prog.set(insert0);
@@ -1794,30 +1758,7 @@ organisation::vector d1 = woof2 * moo2;
     program.set(mappings, parameters.input);
 
     program.run(mappings);
-/*
-    std::vector<organisation::parallel::value> values1 = {
-        { organisation::point(10,13,10), organisation::point(0,-1,-1),  3, 0 },
-        { organisation::point(10,11,10), organisation::point(0,-1,-1),  5, 0 }
-    };
-    
-    std::vector<organisation::parallel::value> values2 = {
-        { organisation::point(10,13,10), organisation::point(1,-1,-1),  3, 1 },
-        { organisation::point(10,10,10), organisation::point(4,-1,-1),  6, 1 }
-    };
 
-    std::vector<organisation::parallel::value> data = program.get();
-
-    std::unordered_map<int,std::vector<organisation::parallel::value>> lookup;
-    lookup[0] = { }; lookup[1] = { };
-
-    for(auto &it: data) 
-    { 
-        lookup[it.client].push_back(it);
-    }
-
-    EXPECT_EQ(lookup[0], values1);
-    EXPECT_EQ(lookup[1], values2);
-*/
     std::vector<std::unordered_map<int,std::string>> compare;
     std::vector<organisation::outputs::output> results = program.get(mappings);
     
@@ -1838,7 +1779,7 @@ organisation::vector d1 = woof2 * moo2;
 
         compare.push_back(temp);
     }
-std::cout << "moo " << compare[0][0] << " " << compare[1][0] << "\r\n";
+
     EXPECT_EQ(expected1, compare[0][0]);
     EXPECT_EQ(expected2, compare[1][0]);
 }
