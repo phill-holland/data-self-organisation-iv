@@ -31,7 +31,6 @@ void organisation::program::reset(parameters &settings)
 void organisation::program::clear()
 {    
     caches.clear();
-    //movement.clear();
     collisions.clear();
     insert.clear();
 }
@@ -40,7 +39,6 @@ bool organisation::program::empty()
 {
     templates::genetic *genes[] = 
     { 
-        //&movement,
         &collisions,
         &insert
     }; 
@@ -57,15 +55,13 @@ bool organisation::program::empty()
 
     return false;
 }
-
+/*
 void organisation::program::generate(data &source)
 {
     clear();
 
     templates::genetic *genes[] = 
     { 
-        &caches,
-        //&movement,
         &collisions,
         &insert
     }; 
@@ -75,6 +71,104 @@ void organisation::program::generate(data &source)
     {
         genes[i]->generate(source);
     }
+
+    // ***
+
+    struct buf
+    {
+        point position;
+        vector direction;
+        int pattern;
+        int pattern_idx;
+    };
+
+    std::unordered_map<int,point> points; // ensure no duplicates!
+    std::vector<buf> stack;//std::tuple<point,vector>> stack;
+
+    int pattern = 0;
+    for(auto &it: insert.values)
+    {
+        if(it.movement.size() > 0)
+        {
+            buf temp;
+            temp.position = it.starting;
+            temp.direction = it.movement.directions.front();
+            temp.pattern = pattern;
+            temp.pattern_idx = 1;
+
+            stack.push_back(temp);
+        }
+        ++pattern;
+    }
+
+const int iterations = 30;
+int iterator = 0;
+
+    while((!stack.empty())&&(iterator++<iterations))
+    {
+        buf temp = stack.back();
+        stack.pop_back();
+
+        if(temp.position.inside(_width,_height,_depth))
+        {
+            int index = ((_width * _height) * temp.position.z) + ((temp.position.y * _width) + temp.position.x);
+            points[index] = temp.position;
+
+            // generate a value position/point here, and then push the direction onto the stack!!
+            // collision direction!
+            // ***
+
+            const int chance = (std::uniform_int_distribution<int>{0, 10})(generator);
+            if(chance <= 3)
+            {
+                point value = source.generate(1);
+                caches.set(value, temp.position);
+                std::vector<vector> directions = collisions.get(temp.direction);
+                for(auto &it: directions)
+                {
+                    buf output;
+                    output.position = temp.position - temp.direction;
+                    output.direction = it;
+                    output.pattern_idx = temp.pattern_idx;
+                    output.pattern = temp.pattern;
+
+                    stack.push_back(output);
+                }                
+            }
+            else
+            {
+                point old = temp.position;
+                temp.position = temp.position + temp.direction;
+                if(temp.position != old)
+                {                    
+                    temp.direction = insert.values[temp.pattern].movement.directions[temp.pattern_idx];
+                    temp.pattern_idx++;
+                    if(temp.pattern_idx > insert.values[temp.pattern].movement.directions.size()) temp.pattern_idx = 0;
+
+                    stack.push_back(temp);
+                }
+            }
+        }
+    };    
+}
+*/
+
+void organisation::program::generate(data &source)
+{
+    clear();
+
+    templates::genetic *genes[] = 
+    { 
+        &caches,
+        &collisions,
+        &insert
+    }; 
+
+    const int components = sizeof(genes) / sizeof(templates::genetic*);
+    for(int i = 0; i < components; ++i)
+    {
+        genes[i]->generate(source);
+    }    
 }
 
 bool organisation::program::mutate(data &source)
@@ -82,7 +176,6 @@ bool organisation::program::mutate(data &source)
     templates::genetic *genes[] = 
     { 
         &caches,
-       // &movement,
         &collisions,
         &insert
     }; 

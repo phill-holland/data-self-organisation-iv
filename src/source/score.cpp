@@ -127,6 +127,10 @@ bool organisation::scores::score::compute(organisation::compute value, settings 
 		int collisions = value.stats.collisions;
 		if(collisions > MAX_COLLISIONS) collisions = MAX_COLLISIONS;
 		if(!set(((float)collisions) / ((float)MAX_COLLISIONS), score_len)) valid = false;
+
+//****
+		if(collisions == 0) return true;
+//****
 	}
  	
 	const int alphabet_len = alphabet.size();		
@@ -136,6 +140,26 @@ bool organisation::scores::score::compute(organisation::compute value, settings 
 	float len_score = compute_comparative_length_score(value.expected, value.value);
 	if(!set(len_score, score_len - 1)) valid = false;
 	
+	// ****
+	/*
+	std::vector<std::tuple<std::string,int>> ddd = _split(value.value);
+	int ll = ddd.size();
+	if(ll > alphabet.size()) ll = alphabet.size();
+	for(int i = 0; i < ll; ++i)
+	{
+		std::tuple<std::string,int> a = ddd[i];
+		std::tuple<std::string,int> b = alphabet[i];
+		if(std::get<0>(a) == std::get<0>(b)) 
+		{			
+			set(1.0f, i);
+			set(1.0f, i * 2);
+		}		
+	}
+
+	return true;
+	*/
+	// ****
+
 	int index = 0;
 	for(auto &it : alphabet)
 	{            

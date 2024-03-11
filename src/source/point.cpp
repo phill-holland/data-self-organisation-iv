@@ -44,6 +44,17 @@ void organisation::point::generate(std::vector<int> &data, int dimensions)
 
 void organisation::point::mutate(std::vector<int> &data, int dimensions)
 {
+    auto validate = [this](point &src, int dim)
+    {
+        const int coordinates[] = { src.x, src.y, src.z };    
+        for(int i = 1; i < dim; ++i)
+        {
+            if((coordinates[i] != -1)&&(coordinates[i-1] == -1)) return false;            
+        }
+
+        return true;
+    };
+
     int _dimensions = dimensions;
     if(_dimensions < 1) _dimensions = 1;
     if(_dimensions > 3) _dimensions = 3;
@@ -59,6 +70,14 @@ void organisation::point::mutate(std::vector<int> &data, int dimensions)
 
     int idx = (std::uniform_int_distribution<int>{0, (int)(data.size() - 1)})(generator);
     *coordinates[count] = data[idx];      
+/*
+    do
+    {
+        int idx = (std::uniform_int_distribution<int>{-1, (int)(data.size() - 1)})(generator);
+        if(idx >= 0) *coordinates[count] = data[idx];      
+        else *coordinates[count] = -1;
+    }while(!validate(*this,_dimensions));    
+*/
 }
 
 std::string organisation::point::serialise()

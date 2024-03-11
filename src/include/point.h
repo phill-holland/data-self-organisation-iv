@@ -79,6 +79,11 @@ namespace organisation
             return point(x + src.x,y + src.y,z + src.z); 
         }   
 
+        point operator-(const vector &src) 
+        { 
+            return point(x - src.x,y - src.y,z - src.z); 
+        }   
+
         point operator/(int r) 
         { 
             return point(x / r,y / r,z / r); 

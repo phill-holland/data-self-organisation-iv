@@ -7,15 +7,18 @@ std::mt19937_64 organisation::genetic::cache::generator(std::random_device{}());
 
 bool organisation::genetic::cache::set(point value, point position)
 {
-    int index = ((_width * _height) * position.z) + ((position.y * _width) + position.x);
-    if(points.find(index) == points.end())
+    if(values.size() < _max_values)
     {
-        points[index] = position;
-        values.push_back(std::tuple<point,point>(value,position));
+        int index = ((_width * _height) * position.z) + ((position.y * _width) + position.x);
+        if(points.find(index) == points.end())
+        {
+            points[index] = position;
+            values.push_back(std::tuple<point,point>(value,position));
 
-        return true;
+            return true;
+        }
     }
-
+    
     return false;
 }
 
@@ -114,6 +117,34 @@ bool organisation::genetic::cache::validate(data &source)
 
 void organisation::genetic::cache::generate(data &source)
 {
+    /*
+    clear();
+                
+    std::vector<int> raw = source.all();
+
+    //const int _w = _width / 2;
+    const int _h = _height;
+    const int _d = _depth / 2;
+
+    const int amount = 30;
+    for(int i = 0; i < amount; ++i)
+    {
+        point value(raw[i % raw.size()],-1,-1);
+
+        div_t d = div(i,_width);
+
+        int x = d.quot;
+        int y = d.rem;
+
+        point position(x,_h - 1 - y,_d);
+        int index = ((_width * _height) * position.z) + ((position.y * _width) + position.x);
+        points[index] = position;
+
+        values.push_back(std::tuple<point,point>(value,position));
+        if(values.size() >= _max_values) return;
+    }
+*/
+    
     clear();
                 
     std::vector<int> raw = source.all();
@@ -134,7 +165,7 @@ void organisation::genetic::cache::generate(data &source)
             values.push_back(std::tuple<point,point>(value,position));
             if(values.size() >= _max_values) return;
         }
-    }
+    }    
 }
 
 bool organisation::genetic::cache::mutate(data &source)

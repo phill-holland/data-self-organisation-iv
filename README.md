@@ -6,7 +6,25 @@ This is a work in progress to investigate how a data storage solution may self o
 
 The underlying principal is to test if a fundamentally chaotic system can self-organise into a stable data storage and retrieval system.
 
-This version differs from the projects data-self-organisation-ii and iii in having modifications for parallel data inserts, rather than sequentially.
+This version differs from https://github.com/phill-holland/data-self-organisation-ii (it's predecessor) in several ways;
+
+- Sentence input, separate by words can be inserted parallel into the system, from several different spatial starting positions.
+
+- If two moving data cells collide, the decision output is now non-commutative, i.e.;
+
+```
+"daisy" colliding with "give"
+```
+
+Is different to;
+
+```
+"give" colliding with "daisy"
+```
+
+The results will be different given this circumstance, in previous versions this would not the case given a different input.  this ensures the output shall not be the same given a slightly different input, but the same words used in the same sentence position.
+
+- It is hypothesized word inputs need to directly interact with one another, and collide, before determine final output.
 
 # Method
 
@@ -64,12 +82,28 @@ This method ensures it encourages partial answers, but with differing word posit
 
 # Todo
 
-- Fix collision detection of native CPU code (native code has somewhat been ignored!)
-
 - Implement different collision methods, by "age" of data in system
 
-- Experiment with different scoring methods, one that treats the system less like a black box, and uses internal information
-to score output
+- Limit inputted word age in the system by some mechanism, to enable length of output to be limited in some way (words must die to stop infinite output!)
+
+- Extend non-commutative collision calculate to include impacts with stationary data objects stored in the cache class
+
+- Either implement the above method, support by the cross-product of two vectors, or add further choices to the collision class
+genetic algorithm generation system;
+
+```
+int length = max_words * max_words * max_collisions;
+int index = (word_token_a * max_words) + word_token_b;
+```
+
+- Retest long sentence chains as input as well as output
+
+- Cache, add stationary data cells, that do not output data when collided with (a pseudowall)
+
+- <strike>Fix collision detection of native CPU code (native code has somewhat been ignored!)</strike> will not fix
+
+- <strike>Experiment with different scoring methods, one that treats the system less like a black box, and uses internal information
+to score output</strike> data-self-organisation-iii, abandoned
 
 # Problems
 

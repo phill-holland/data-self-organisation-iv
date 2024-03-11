@@ -79,13 +79,6 @@ void organisation::parallel::program::reset(::parallel::device &dev,
     deviceCacheClients = sycl::malloc_device<sycl::int4>(settings.max_values * settings.clients(), qt);
     if(deviceCacheClients == NULL) return;
 
-/*
-    deviceMovements = sycl::malloc_device<sycl::float4>(settings.max_movements * settings.max_movement_patterns * settings.clients(), qt);
-    if(deviceMovements == NULL) return;
-
-    deviceMovementsCounts = sycl::malloc_device<int>(settings.max_movement_patterns * settings.clients(), qt);
-    if(deviceMovementsCounts == NULL) return;
-*/
     deviceCollisionCounts = sycl::malloc_device<int>(settings.epochs() * settings.clients(), qt);
     if(deviceCollisionCounts == NULL) return;
 
@@ -117,13 +110,6 @@ void organisation::parallel::program::reset(::parallel::device &dev,
     hostCacheClients = sycl::malloc_host<sycl::int4>(settings.max_values * settings.host_buffer, qt);
     if(hostCacheClients == NULL) return;
 
-/*
-    hostMovements = sycl::malloc_host<sycl::float4>(settings.max_movements * settings.max_movement_patterns * settings.host_buffer, qt);
-    if(hostMovements == NULL) return;
-
-    hostMovementsCounts = sycl::malloc_host<int>(settings.max_movement_patterns * settings.host_buffer, qt);
-    if(hostMovementsCounts == NULL) return;
-  */  
     // ***
 
     deviceOutputValues = sycl::malloc_device<sycl::int4>(settings.max_values * settings.clients(), qt);
@@ -231,8 +217,6 @@ void organisation::parallel::program::clear()
     events.push_back(qt.memset(deviceCacheValues, -1, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     events.push_back(qt.memset(deviceCacheClients, 0, sizeof(sycl::int4) * settings.max_values * settings.clients()));
     
-//    events.push_back(qt.memset(deviceMovements, 0, sizeof(sycl::float4) * settings.max_movements * settings.max_movement_patterns * settings.clients()));
-//    events.push_back(qt.memset(deviceMovementsCounts, 0, sizeof(int) * settings.max_movement_patterns * settings.clients()));
     events.push_back(qt.memset(deviceCollisionCounts, 0, sizeof(int) * settings.epochs() * settings.clients()));
 
     events.push_back(qt.memset(deviceNextCollisionKeys, 0, sizeof(sycl::int2) * settings.max_values * settings.clients()));
@@ -362,6 +346,12 @@ void organisation::parallel::program::run(organisation::data &mappings)
             corrections();
             outputting(epoch, iterations);
             boundaries();
+
+//std::cout << "positions epoch(" << epoch << "):";
+//outputarb(devicePositions, totalValues);
+//std::cout << "values:";
+//outputarb(deviceValues, totalValues);
+//std::cout << "\r\n";
         };
 
         move(mappings);            
@@ -523,11 +513,46 @@ void organisation::parallel::program::next()
                 sycl::int2 collision = _collisionKeys[i];
                 if(collision.x() > 0)
                 {
-                    int key = GetCollidedKey(_positions[i], _nextPositions[i]);
-                    int offset = (client * _max_collisions * _max_words) + (_max_collisions * _values[i].x()) + key;
-                
-                    sycl::float4 direction = _collisions[offset];                    
-                    _nextDirections[i] = direction;
+                    // ***
+                    // ONLY WORKS IF COLLISION WITH ANOTHER MOVING CELL, NOT DATA CELL IN CACHE!!!!
+                    //collsiion.y() cell may not have collided with current cell!!!
+                    // if collision[i].x() > 0
+                    // if collision[collision[i].y()].x() > 0 && collision[collision[i].y()].y() == i
+                    // then non-communative vector mult
+                    // else basic direction1
+                    // ***
+// return vector(y * src.z - z * src.y,z * src.x - x * src.z,x * src.y - y * src.x, 0);              
+                    if (_collisionKeys[collision.y()].x() > 0 && _collisionKeys[collision.y()].y() == i)
+                    {
+                        int key1 = GetCollidedKey(_positions[i], _nextPositions[i]);
+                        int offset1 = (client * _max_collisions * _max_words) + (_max_collisions * _values[i].x()) + key1;
+
+                        // key is wrong for this, needs to implement condition abour
+                        int key2 = GetCollidedKey(_positions[collision.y()], _nextPositions[collision.y()]);
+                        int offset2 = (client * _max_collisions * _max_words) + (_max_collisions * _values[collision.y()].x()) + key2;
+
+                        sycl::float4 direction1 = _collisions[offset1];
+                        sycl::float4 direction2 = _collisions[offset2];
+
+                        sycl::float4 new_direction = { 
+                            direction1.y() * direction2.z() - direction1.z() * direction2.y(),
+                            direction1.z() * direction2.x() - direction1.x() * direction2.z(),
+                            direction1.x() * direction2.y() - direction1.y() * direction2.x(),
+                            0.0f };
+                        
+    //out << "c1:" << collision.y() << " d1: " << direction1.x() << "," << direction1.y() << "," << direction1.z() << " d2:" << direction2.x() << "," << direction2.y() << "," << direction2.z() << " new:" << new_direction.x() << "," << new_direction.y() << "," << new_direction.z() << "\n";
+
+                        _nextDirections[i] = new_direction;
+                        //_nextDirections[i] = direction1;
+                    }
+                    else
+                    {
+// update for dual key                         
+                        int key1 = GetCollidedKey(_positions[i], _nextPositions[i]);                        
+                        int offset1 = (client * _max_collisions * _max_words) + (_max_collisions * _values[i].x()) + key1;
+                        sycl::float4 direction1 = _collisions[offset1];
+                        _nextDirections[i] = direction1;
+                    }
                 }
                 else
                 {

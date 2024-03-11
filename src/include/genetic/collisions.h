@@ -2,6 +2,7 @@
 #include "genetic/templates/serialiser.h"
 #include "data.h"
 #include "parameters.h"
+#include "point.h"
 #include <vector>
 #include <random>
 #include <string>
@@ -19,12 +20,16 @@ namespace organisation
 
             std::vector<int> values;
 
+            int _max_collisions;
+            int _max_mappings;
             int length;
 
         public:
             collisions(parameters &settings) 
             {  
-                length = settings.max_collisions * settings.mappings.maximum();
+                _max_collisions = settings.max_collisions;
+                _max_mappings = settings.mappings.maximum();
+                length = settings.max_collisions * _max_mappings;//settings.mappings.maximum();
                 values.resize(length);
             }
 
@@ -55,6 +60,9 @@ namespace organisation
         public:
             bool get(int &result, int idx);
             bool set(int source, int idx);
+
+            std::vector<vector> get(point value);
+            std::vector<vector> get(vector direction);
 
         public:
             void copy(const collisions &source);

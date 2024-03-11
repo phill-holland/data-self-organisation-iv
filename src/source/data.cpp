@@ -1,6 +1,9 @@
 #include "data.h"
 #include "general.h"
 #include <iostream>
+#include <functional>
+
+std::mt19937_64 organisation::data::generator(std::random_device{}());
 
 void organisation::data::add(std::vector<std::string> &source)
 {
@@ -82,6 +85,41 @@ std::vector<int> organisation::data::all()
     for(auto &r: reverse)
     {
         result.push_back(r.first);
+    }
+
+    return result;
+}
+
+organisation::point organisation::data::generate(int dimensions)
+{
+    point result(-1,-1,-1);
+
+    int _dimensions = dimensions;
+    if(_dimensions < 1) _dimensions = 1;
+    if(_dimensions > 3) _dimensions = 3;
+    
+    std::vector<int> raw = all();
+
+    int count = (std::uniform_int_distribution<int>{1, _dimensions})(generator);
+
+    std::vector<int> results;
+    for(int j = 0; j < count; ++j)
+    {
+        int value = 0;
+        do
+        {
+            int idx = (std::uniform_int_distribution<int>{0, (int)(raw.size() - 1)})(generator);
+            value = raw[idx];
+        }while(std::find(results.begin(),results.end(),value) != results.end());
+
+        results.push_back(value);
+    }
+
+    int *coordinates[] = { &result.x, &result.y, &result.z };
+
+    for(int j = 0; j < results.size(); ++j)
+    {
+        *coordinates[j] = results[j];
     }
 
     return result;

@@ -37,7 +37,6 @@ namespace organisation
         int _width, _height, _depth;
 
         genetic::cache caches;
-        //genetic::movements::movement movement;
         genetic::collisions collisions;
         genetic::inserts::insert insert;
 
@@ -46,7 +45,7 @@ namespace organisation
         bool init;
         
     public:
-        program(parameters &settings) : caches(settings), /*movement(settings),*/ collisions(settings), insert(settings)
+        program(parameters &settings) : caches(settings), collisions(settings), insert(settings)
         { 
             makeNull(); 
             reset(settings); 

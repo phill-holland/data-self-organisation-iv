@@ -15,8 +15,12 @@ of a bicycle built for two .
 
 organisation::dictionary::dictionary()
 {
+    words = { "daisy", "give", "I'm", "half", "answer", "love", "you" };
+/*
     words = { "daisy", "give", "me", "your", "answer", "do", "I'm", "half", "crazy", "for", "the", "love", "of",
-              "you" };/*, "it", "won't", "be", "a", "stylish", "marriage", "I", "can't", "afford", "carriage",
+              "you" };*/
+              
+              /*, "it", "won't", "be", "a", "stylish", "marriage", "I", "can't", "afford", "carriage",
               "but", "you'll", "look", "sweet", "upon", "seat", "bicycle", "built", "two", "." };*/
 }
 
